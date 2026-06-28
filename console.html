@@ -730,7 +730,7 @@
   /* ========= STAT STRIP ========= */
   .stat-strip {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     padding: 20px 24px;
   }
@@ -757,6 +757,181 @@
     letter-spacing: 0.04em;
     margin-top: 6px;
     font-weight: 500;
+  }
+
+  /* ========= ATTENDANCE UPLOAD ========= */
+  .upload-zone {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 48px 32px;
+    text-align: center;
+    transition: all var(--transition);
+    cursor: pointer;
+  }
+
+  .upload-zone:hover,
+  .upload-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-subtle);
+  }
+
+  .upload-zone.dragover .upload-icon svg {
+    stroke: var(--accent);
+  }
+
+  .upload-icon {
+    margin-bottom: 16px;
+  }
+
+  .stat-strip-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  .att-search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 0 12px;
+    flex: 1;
+    max-width: 280px;
+  }
+
+  .att-search-box input {
+    border: none;
+    background: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-primary);
+    padding: 8px 0;
+    width: 100%;
+  }
+
+  .att-search-box input::placeholder { color: var(--text-tertiary); }
+
+  .att-search-box:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+
+  /* Status toggle buttons */
+  .status-toggle {
+    display: inline-flex;
+    border-radius: var(--radius-xs);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .status-toggle button {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-right: 1px solid var(--border);
+    font-family: inherit;
+  }
+
+  .status-toggle button:last-child { border-right: none; }
+
+  .status-toggle button:hover {
+    background: var(--bg);
+  }
+
+  .status-toggle button.active-present {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  .status-toggle button.active-absent {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+  }
+
+  .att-table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-inline {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+
+  .btn-inline:hover { background: var(--accent-subtle); }
+
+  td input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+
+  th input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+
+  .att-row-num {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+
+  /* Save success toast */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    z-index: 999;
+    animation: toastIn 0.3s ease, toastOut 0.3s ease 2.5s forwards;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes toastOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(16px); }
   }
 
   /* ========= SCROLLBAR ========= */
@@ -1091,32 +1266,119 @@
 
       <!-- ============ ATTENDANCE ============ -->
       <div class="view" id="view-attendance">
-        <div class="panel">
+        <!-- Upload area (shown when no data loaded) -->
+        <div class="panel" id="att-upload-panel">
           <div class="panel-head">
-            <h3>Attendance — June 28, 2026</h3>
-            <div class="actions"><button class="btn ghost">Upload Sheet Photo</button><button class="btn primary">Mark Attendance</button></div>
+            <h3>Attendance</h3>
+            <div class="actions">
+              <input type="date" id="att-date" value="2026-06-28" style="border:1px solid var(--border);border-radius:var(--radius-xs);padding:7px 12px;font-family:inherit;font-size:13px;background:var(--surface);color:var(--text-primary);outline:none;">
+            </div>
           </div>
-          <div class="stat-strip">
-            <div class="s"><div class="n" style="color:var(--green);">138</div><div class="l">Present</div></div>
-            <div class="s"><div class="n" style="color:var(--yellow);">10</div><div class="l">On Leave</div></div>
-            <div class="s"><div class="n" style="color:var(--red);">8</div><div class="l">Absent</div></div>
+          <div class="panel-body">
+            <div class="upload-zone" id="uploadZone">
+              <div class="upload-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <h3 style="font-size:16px;font-weight:600;margin-bottom:6px;">Upload Manpower List</h3>
+              <p style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;max-width:400px;line-height:1.6;">
+                Upload a CSV or Excel file with your manpower list. Required columns: <strong>Name</strong> and <strong>Team</strong>. Optional: <strong>Role</strong>, <strong>ID</strong>.
+              </p>
+              <label class="btn primary" style="cursor:pointer;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Choose File
+                <input type="file" id="att-file-input" accept=".csv,.xlsx,.xls" style="display:none;">
+              </label>
+              <p style="font-size:11px;color:var(--text-tertiary);margin-top:12px;">Supports .csv, .xlsx, .xls</p>
+            </div>
+            <div style="text-align:center;margin-top:16px;">
+              <button class="btn ghost" onclick="loadSampleData()" style="font-size:13px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Load Sample Data Instead
+              </button>
+            </div>
           </div>
-          <div class="filter-row" style="padding-top:0;">
-            <select><option>All Teams</option><option>Drainage Cleaning</option><option>Bridge Epoxy</option></select>
-            <input type="date" value="2026-06-28">
+        </div>
+
+        <!-- Attendance marking area (shown after data loaded) -->
+        <div id="att-workspace" style="display:none;">
+          <div class="stat-strip-wrap">
+            <div class="stat-strip">
+              <div class="s"><div class="n" id="att-count-total" style="color:var(--blue);">0</div><div class="l">Total</div></div>
+              <div class="s"><div class="n" id="att-count-present" style="color:var(--green);">0</div><div class="l">Present</div></div>
+              <div class="s"><div class="n" id="att-count-absent" style="color:var(--red);">0</div><div class="l">Absent</div></div>
+              <div class="s"><div class="n" id="att-count-unmarked" style="color:var(--text-tertiary);">0</div><div class="l">Unmarked</div></div>
+            </div>
           </div>
-          <table>
-            <thead>
-              <tr><th>Employee</th><th>Team</th><th>Time In</th><th>Time Out</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><span class="avatar-sm">RS</span>R. Santos</td><td>Drainage Cleaning A</td><td>6:58 AM</td><td>4:02 PM</td><td><span class="pill ok"><span class="dot"></span>Present</span></td></tr>
-              <tr><td><span class="avatar-sm">AC</span>A. Cruz</td><td>Bridge Epoxy Team 2</td><td>7:05 AM</td><td>4:10 PM</td><td><span class="pill ok"><span class="dot"></span>Present</span></td></tr>
-              <tr><td><span class="avatar-sm">MR</span>M. Reyes</td><td>Bridge Routine Team 1</td><td>—</td><td>—</td><td><span class="pill warn"><span class="dot"></span>On Leave</span></td></tr>
-              <tr><td><span class="avatar-sm">LG</span>L. Garcia</td><td>Vegetation Crew</td><td>—</td><td>—</td><td><span class="pill bad"><span class="dot"></span>Absent</span></td></tr>
-              <tr><td><span class="avatar-sm">JT</span>J. Torres</td><td>Mechanized Sweeper</td><td>6:45 AM</td><td>3:50 PM</td><td><span class="pill ok"><span class="dot"></span>Present</span></td></tr>
-            </tbody>
-          </table>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3 id="att-panel-title">Attendance — June 28, 2026</h3>
+              <div class="actions">
+                <button class="btn ghost" onclick="markAllStatus('present')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  All Present
+                </button>
+                <button class="btn ghost" onclick="markAllStatus('absent')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  All Absent
+                </button>
+                <button class="btn ghost" onclick="resetAttendance()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                  Reset
+                </button>
+                <button class="btn ghost" onclick="exportAttendance()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export
+                </button>
+                <button class="btn primary" onclick="saveAttendance()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                  Save
+                </button>
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="att-search-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="att-search" placeholder="Search by name..." oninput="filterAttendance()">
+              </div>
+              <select id="att-filter-team" onchange="filterAttendance()">
+                <option value="">All Teams</option>
+              </select>
+              <select id="att-filter-status" onchange="filterAttendance()">
+                <option value="">All Status</option>
+                <option value="present">Present</option>
+                <option value="absent">Absent</option>
+                <option value="unmarked">Unmarked</option>
+              </select>
+              <button class="btn ghost" onclick="showUploadPanel()" style="margin-left:auto;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload New List
+              </button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:32px;"><input type="checkbox" id="att-select-all" onchange="toggleSelectAll(this)" title="Select all"></th>
+                  <th>#</th>
+                  <th>Employee</th>
+                  <th>Team</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th style="text-align:center;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="att-table-body">
+              </tbody>
+            </table>
+            <div class="att-table-footer" id="att-table-footer">
+              <span id="att-showing">Showing 0 of 0</span>
+              <span id="att-selected-actions" style="display:none;">
+                <strong id="att-selected-count">0</strong> selected —
+                <button class="btn-inline" onclick="markSelectedStatus('present')">Mark Present</button>
+                <button class="btn-inline" onclick="markSelectedStatus('absent')">Mark Absent</button>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1289,6 +1551,366 @@
 
   setRole('admin');
   goTo('dashboard');
+
+  // ============================================================
+  // ATTENDANCE SYSTEM
+  // ============================================================
+  var attendanceData = [];
+
+  // File upload handling
+  var fileInput = document.getElementById('att-file-input');
+  var uploadZone = document.getElementById('uploadZone');
+
+  fileInput.addEventListener('change', function(e) {
+    if (e.target.files.length > 0) handleFile(e.target.files[0]);
+  });
+
+  uploadZone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    uploadZone.classList.add('dragover');
+  });
+
+  uploadZone.addEventListener('dragleave', function() {
+    uploadZone.classList.remove('dragover');
+  });
+
+  uploadZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+  });
+
+  function handleFile(file) {
+    var name = file.name.toLowerCase();
+    if (name.endsWith('.csv')) {
+      var reader = new FileReader();
+      reader.onload = function(e) { parseCSV(e.target.result); };
+      reader.readAsText(file);
+    } else if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
+      var reader = new FileReader();
+      reader.onload = function(e) { parseExcel(e.target.result); };
+      reader.readAsArrayBuffer(file);
+    } else {
+      showToast('Unsupported file format. Please use CSV or Excel.', 'error');
+    }
+  }
+
+  function parseCSV(text) {
+    var lines = text.split(/\r?\n/).filter(function(l) { return l.trim() !== ''; });
+    if (lines.length < 2) { showToast('File appears empty or has no data rows.', 'error'); return; }
+
+    var headerLine = lines[0];
+    var sep = headerLine.indexOf('\t') > -1 ? '\t' : ',';
+    var headers = headerLine.split(sep).map(function(h) { return h.trim().toLowerCase().replace(/['"]/g, ''); });
+
+    var nameIdx = findCol(headers, ['name', 'employee', 'employee name', 'full name', 'fullname', 'worker']);
+    var teamIdx = findCol(headers, ['team', 'group', 'department', 'dept', 'crew', 'assigned team']);
+    var roleIdx = findCol(headers, ['role', 'position', 'designation', 'title', 'job title']);
+    var idIdx = findCol(headers, ['id', 'employee id', 'emp id', 'empid', 'number', 'no', 'no.']);
+
+    if (nameIdx === -1) { showToast('Could not find a "Name" column. Please include a Name header.', 'error'); return; }
+
+    attendanceData = [];
+    for (var i = 1; i < lines.length; i++) {
+      var cols = lines[i].split(sep).map(function(c) { return c.trim().replace(/^['"]|['"]$/g, ''); });
+      var empName = cols[nameIdx] || '';
+      if (!empName) continue;
+
+      attendanceData.push({
+        id: idIdx > -1 ? (cols[idIdx] || '') : '',
+        name: empName,
+        team: teamIdx > -1 ? (cols[teamIdx] || '') : '',
+        role: roleIdx > -1 ? (cols[roleIdx] || '') : '',
+        status: 'unmarked',
+        selected: false
+      });
+    }
+
+    if (attendanceData.length === 0) { showToast('No valid rows found in file.', 'error'); return; }
+
+    showToast(attendanceData.length + ' employees loaded successfully.', 'success');
+    activateWorkspace();
+  }
+
+  function parseExcel(buffer) {
+    // Lightweight xlsx parser for simple single-sheet files
+    // For production, you'd use SheetJS. This is a fallback that reads as CSV-like text.
+    try {
+      var bytes = new Uint8Array(buffer);
+      var text = '';
+      for (var i = 0; i < bytes.length; i++) {
+        var c = bytes[i];
+        if (c >= 32 && c < 127) text += String.fromCharCode(c);
+        else if (c === 10 || c === 13) text += '\n';
+        else text += ' ';
+      }
+      // Try to extract readable content
+      showToast('For best results, please save your file as CSV (.csv) and re-upload.', 'error');
+    } catch(e) {
+      showToast('Could not read Excel file. Please save as CSV and try again.', 'error');
+    }
+  }
+
+  function findCol(headers, names) {
+    for (var i = 0; i < headers.length; i++) {
+      for (var j = 0; j < names.length; j++) {
+        if (headers[i] === names[j]) return i;
+      }
+    }
+    return -1;
+  }
+
+  function loadSampleData() {
+    attendanceData = [
+      { id: 'SV-0142', name: 'R. Santos', team: 'Drainage Cleaning A', role: 'Team Lead', status: 'unmarked', selected: false },
+      { id: 'SV-0188', name: 'A. Cruz', team: 'Bridge Epoxy Team 2', role: 'Supervisor', status: 'unmarked', selected: false },
+      { id: 'SV-0091', name: 'M. Reyes', team: 'Bridge Routine Team 1', role: 'Technician', status: 'unmarked', selected: false },
+      { id: 'SV-0205', name: 'L. Garcia', team: 'Vegetation Crew', role: 'Laborer', status: 'unmarked', selected: false },
+      { id: 'SV-0110', name: 'J. Torres', team: 'Mechanized Sweeper', role: 'Operator', status: 'unmarked', selected: false },
+      { id: 'SV-0223', name: 'P. Ramos', team: 'Drainage Cleaning A', role: 'Laborer', status: 'unmarked', selected: false },
+      { id: 'SV-0245', name: 'D. Villanueva', team: 'Bridge Epoxy Team 2', role: 'Technician', status: 'unmarked', selected: false },
+      { id: 'SV-0301', name: 'K. Mendoza', team: 'Vegetation Crew', role: 'Laborer', status: 'unmarked', selected: false },
+      { id: 'SV-0312', name: 'E. Bautista', team: 'Bridge Routine Team 1', role: 'Team Lead', status: 'unmarked', selected: false },
+      { id: 'SV-0330', name: 'F. Aquino', team: 'Mechanized Sweeper', role: 'Operator', status: 'unmarked', selected: false },
+      { id: 'SV-0344', name: 'G. Navarro', team: 'Drainage Cleaning A', role: 'Laborer', status: 'unmarked', selected: false },
+      { id: 'SV-0358', name: 'H. Castillo', team: 'Bridge Epoxy Team 2', role: 'Laborer', status: 'unmarked', selected: false },
+      { id: 'SV-0371', name: 'I. Fernandez', team: 'Vegetation Crew', role: 'Supervisor', status: 'unmarked', selected: false },
+      { id: 'SV-0389', name: 'C. Dela Cruz', team: 'Bridge Routine Team 1', role: 'Laborer', status: 'unmarked', selected: false },
+      { id: 'SV-0402', name: 'B. Gonzales', team: 'Mechanized Sweeper', role: 'Laborer', status: 'unmarked', selected: false }
+    ];
+    showToast(attendanceData.length + ' sample employees loaded.', 'success');
+    activateWorkspace();
+  }
+
+  function activateWorkspace() {
+    document.getElementById('att-upload-panel').style.display = 'none';
+    document.getElementById('att-workspace').style.display = 'block';
+
+    var dateVal = document.getElementById('att-date').value;
+    var dateObj = new Date(dateVal + 'T00:00:00');
+    var formatted = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    document.getElementById('att-panel-title').textContent = 'Attendance — ' + formatted;
+
+    populateTeamFilter();
+    renderTable();
+    updateCounts();
+  }
+
+  function showUploadPanel() {
+    document.getElementById('att-upload-panel').style.display = 'block';
+    document.getElementById('att-workspace').style.display = 'none';
+  }
+
+  function populateTeamFilter() {
+    var teams = [];
+    attendanceData.forEach(function(emp) {
+      if (emp.team && teams.indexOf(emp.team) === -1) teams.push(emp.team);
+    });
+    teams.sort();
+    var sel = document.getElementById('att-filter-team');
+    sel.innerHTML = '<option value="">All Teams</option>';
+    teams.forEach(function(t) {
+      sel.innerHTML += '<option value="' + t + '">' + t + '</option>';
+    });
+  }
+
+  function getFilteredData() {
+    var search = document.getElementById('att-search').value.toLowerCase();
+    var team = document.getElementById('att-filter-team').value;
+    var status = document.getElementById('att-filter-status').value;
+
+    return attendanceData.filter(function(emp) {
+      if (search && emp.name.toLowerCase().indexOf(search) === -1) return false;
+      if (team && emp.team !== team) return false;
+      if (status && emp.status !== status) return false;
+      return true;
+    });
+  }
+
+  function getInitials(name) {
+    return name.split(/[\s.]+/).filter(function(p) { return p.length > 0; }).map(function(p) { return p[0]; }).join('').toUpperCase().substring(0, 2);
+  }
+
+  function renderTable() {
+    var filtered = getFilteredData();
+    var tbody = document.getElementById('att-table-body');
+    var html = '';
+
+    filtered.forEach(function(emp, idx) {
+      var globalIdx = attendanceData.indexOf(emp);
+      var initials = getInitials(emp.name);
+
+      var statusHtml;
+      if (emp.status === 'present') {
+        statusHtml = '<span class="pill ok"><span class="dot"></span>Present</span>';
+      } else if (emp.status === 'absent') {
+        statusHtml = '<span class="pill bad"><span class="dot"></span>Absent</span>';
+      } else {
+        statusHtml = '<span class="pill" style="background:var(--bg);color:var(--text-tertiary);"><span class="dot" style="background:var(--text-tertiary);"></span>Unmarked</span>';
+      }
+
+      var presentActive = emp.status === 'present' ? ' active-present' : '';
+      var absentActive = emp.status === 'absent' ? ' active-absent' : '';
+
+      html += '<tr data-idx="' + globalIdx + '">' +
+        '<td><input type="checkbox" ' + (emp.selected ? 'checked' : '') + ' onchange="toggleSelect(' + globalIdx + ', this.checked)"></td>' +
+        '<td><span class="att-row-num">' + (idx + 1) + '</span></td>' +
+        '<td><span class="avatar-sm">' + initials + '</span>' + emp.name + '</td>' +
+        '<td>' + (emp.team || '—') + '</td>' +
+        '<td>' + (emp.role || '—') + '</td>' +
+        '<td>' + statusHtml + '</td>' +
+        '<td style="text-align:center;"><div class="status-toggle">' +
+          '<button class="' + presentActive + '" onclick="setStatus(' + globalIdx + ',\'present\')" title="Mark Present">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' +
+          '</button>' +
+          '<button class="' + absentActive + '" onclick="setStatus(' + globalIdx + ',\'absent\')" title="Mark Absent">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+          '</button>' +
+        '</div></td>' +
+      '</tr>';
+    });
+
+    tbody.innerHTML = html;
+    document.getElementById('att-showing').textContent = 'Showing ' + filtered.length + ' of ' + attendanceData.length;
+    updateSelectAllState();
+    updateSelectedActions();
+  }
+
+  function setStatus(idx, status) {
+    if (attendanceData[idx].status === status) {
+      attendanceData[idx].status = 'unmarked';
+    } else {
+      attendanceData[idx].status = status;
+    }
+    renderTable();
+    updateCounts();
+  }
+
+  function markAllStatus(status) {
+    attendanceData.forEach(function(emp) { emp.status = status; });
+    renderTable();
+    updateCounts();
+  }
+
+  function resetAttendance() {
+    attendanceData.forEach(function(emp) {
+      emp.status = 'unmarked';
+      emp.selected = false;
+    });
+    renderTable();
+    updateCounts();
+  }
+
+  function updateCounts() {
+    var total = attendanceData.length;
+    var present = attendanceData.filter(function(e) { return e.status === 'present'; }).length;
+    var absent = attendanceData.filter(function(e) { return e.status === 'absent'; }).length;
+    var unmarked = total - present - absent;
+
+    document.getElementById('att-count-total').textContent = total;
+    document.getElementById('att-count-present').textContent = present;
+    document.getElementById('att-count-absent').textContent = absent;
+    document.getElementById('att-count-unmarked').textContent = unmarked;
+  }
+
+  function filterAttendance() {
+    renderTable();
+  }
+
+  // Selection
+  function toggleSelect(idx, checked) {
+    attendanceData[idx].selected = checked;
+    updateSelectAllState();
+    updateSelectedActions();
+  }
+
+  function toggleSelectAll(checkbox) {
+    var filtered = getFilteredData();
+    filtered.forEach(function(emp) { emp.selected = checkbox.checked; });
+    renderTable();
+  }
+
+  function updateSelectAllState() {
+    var filtered = getFilteredData();
+    var allChecked = filtered.length > 0 && filtered.every(function(e) { return e.selected; });
+    document.getElementById('att-select-all').checked = allChecked;
+  }
+
+  function updateSelectedActions() {
+    var count = attendanceData.filter(function(e) { return e.selected; }).length;
+    var el = document.getElementById('att-selected-actions');
+    if (count > 0) {
+      el.style.display = 'inline';
+      document.getElementById('att-selected-count').textContent = count;
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  function markSelectedStatus(status) {
+    attendanceData.forEach(function(emp) {
+      if (emp.selected) {
+        emp.status = status;
+        emp.selected = false;
+      }
+    });
+    renderTable();
+    updateCounts();
+    showToast('Selected employees marked as ' + status + '.', 'success');
+  }
+
+  // Save
+  function saveAttendance() {
+    var unmarked = attendanceData.filter(function(e) { return e.status === 'unmarked'; }).length;
+    if (unmarked > 0) {
+      if (!confirm(unmarked + ' employee(s) are still unmarked. Save anyway?')) return;
+    }
+    var dateVal = document.getElementById('att-date').value;
+    var key = 'savvice_attendance_' + dateVal;
+    var saveData = attendanceData.map(function(e) {
+      return { name: e.name, team: e.team, role: e.role, id: e.id, status: e.status };
+    });
+    try {
+      localStorage.setItem(key, JSON.stringify(saveData));
+      showToast('Attendance saved for ' + dateVal + '.', 'success');
+    } catch(e) {
+      showToast('Saved in session (localStorage unavailable).', 'success');
+    }
+  }
+
+  // Export CSV
+  function exportAttendance() {
+    var dateVal = document.getElementById('att-date').value;
+    var csv = 'Name,Team,Role,ID,Status\n';
+    attendanceData.forEach(function(emp) {
+      csv += '"' + emp.name + '","' + emp.team + '","' + emp.role + '","' + emp.id + '","' + emp.status + '"\n';
+    });
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'attendance_' + dateVal + '.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+    showToast('Attendance exported as CSV.', 'success');
+  }
+
+  // Toast notifications
+  function showToast(msg, type) {
+    var existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+
+    var icon = type === 'success'
+      ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+
+    var toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = icon + '<span>' + msg + '</span>';
+    document.body.appendChild(toast);
+
+    setTimeout(function() { if (toast.parentNode) toast.remove(); }, 3000);
+  }
 </script>
 
 </body>
