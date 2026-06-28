@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savvice Ops Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* apple-inspired palette */
+    --bg: #f5f5f7;
+    --surface: #ffffff;
+    --surface-secondary: #fafafa;
+    --text-primary: #1d1d1f;
+    --text-secondary: #86868b;
+    --text-tertiary: #aeaeb2;
+    --border: rgba(0, 0, 0, 0.06);
+    --border-strong: rgba(0, 0, 0, 0.1);
+    --hover: rgba(0, 0, 0, 0.03);
+
+    /* brand */
+    --accent: #ff6a1a;
+    --accent-hover: #e85d10;
+    --accent-subtle: rgba(255, 106, 26, 0.08);
+
+    /* sidebar */
+    --sidebar-bg: #1d1d1f;
+    --sidebar-hover: rgba(255, 255, 255, 0.06);
+    --sidebar-active: rgba(255, 255, 255, 0.1);
+    --sidebar-text: rgba(255, 255, 255, 0.85);
+    --sidebar-text-dim: rgba(255, 255, 255, 0.45);
+
+    /* status */
+    --green: #34c759;
+    --green-bg: rgba(52, 199, 89, 0.1);
+    --yellow: #ff9f0a;
+    --yellow-bg: rgba(255, 159, 10, 0.1);
+    --red: #ff3b30;
+    --red-bg: rgba(255, 59, 48, 0.08);
+    --blue: #007aff;
+    --blue-bg: rgba(0, 122, 255, 0.08);
+
+    /* layout */
+    --sidebar-width: 260px;
+    --topbar-height: 64px;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 2px 8px rgba(0,0,0,0.06), 0 0 1px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.06);
+    --transition: 200ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  *, *::before, *::after {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  select {
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  table { border-collapse: collapse; width: 100%; }
+
+  /* ========= APP SHELL ========= */
+  .app { display: flex; min-height: 100vh; }
+
+  /* ========= SIDEBAR ========= */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    color: #fff;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 30;
+    overflow: hidden;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 24px 24px 20px;
+  }
+
+  .brand .mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .brand .name {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .brand .sub {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--sidebar-text-dim);
+    text-transform: uppercase;
+    margin-top: 1px;
+    font-weight: 500;
+  }
+
+  .role-pill {
+    margin: 4px 16px 8px;
+    padding: 10px 14px;
+    background: var(--sidebar-hover);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--sidebar-text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 500;
+    transition: background var(--transition);
+  }
+
+  .role-pill:hover { background: rgba(255,255,255,0.08); }
+
+  .role-pill select {
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 2px;
+  }
+
+  .role-pill select option { color: var(--text-primary); background: var(--surface); }
+
+  nav.sidenav {
+    flex: 1;
+    padding: 8px 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  nav.sidenav::-webkit-scrollbar { width: 4px; }
+  nav.sidenav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+  .nav-section-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sidebar-text-dim);
+    padding: 20px 14px 8px;
+    font-weight: 600;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    color: var(--sidebar-text);
+    font-size: 13.5px;
+    font-weight: 500;
+    margin-bottom: 2px;
+    transition: all var(--transition);
+    width: 100%;
+    text-align: left;
+    position: relative;
+  }
+
+  .nav-item .ico {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .nav-item:hover:not(.active):not([disabled]) {
+    background: var(--sidebar-hover);
+    color: #fff;
+  }
+
+  .nav-item:hover:not(.active):not([disabled]) .ico { opacity: 0.9; }
+
+  .nav-item.active {
+    background: var(--sidebar-active);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    background: var(--accent);
+    border-radius: 0 3px 3px 0;
+  }
+
+  .nav-item.active .ico { opacity: 1; }
+
+  .nav-item[disabled] {
+    opacity: 0.2;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .sidebar-foot {
+    padding: 18px 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 12px;
+    color: var(--sidebar-text-dim);
+    line-height: 1.6;
+  }
+
+  .sidebar-foot .sync-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ========= MAIN AREA ========= */
+  .main {
+    flex: 1;
+    min-width: 0;
+    margin-left: var(--sidebar-width);
+  }
+
+  .topbar {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 36px;
+    height: var(--topbar-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .topbar h1 {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  .topbar .crumbs {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    width: 240px;
+    transition: all var(--transition);
+    cursor: text;
+  }
+
+  .search-box:hover { border-color: var(--border-strong); }
+  .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
+
+  .search-box input {
+    border: none;
+    background: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-primary);
+    width: 100%;
+  }
+
+  .search-box input::placeholder { color: var(--text-tertiary); }
+
+  .search-icon {
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sidebar-bg), #3a3a3c);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: transform var(--transition);
+  }
+
+  .avatar:hover { transform: scale(1.05); }
+
+  .content { padding: 28px 36px 60px; }
+
+  /* ========= VIEW TRANSITIONS ========= */
+  .view { display: none; }
+  .view.active { display: block; animation: viewIn 0.35s cubic-bezier(0.25, 0.1, 0.25, 1); }
+  @keyframes viewIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========= KPI CARDS ========= */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .kpi {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: all var(--transition);
+  }
+
+  .kpi:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-1px);
+  }
+
+  .kpi .label {
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .kpi .value {
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .kpi .delta {
+    font-size: 12px;
+    margin-top: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .kpi .delta.up { color: var(--green); }
+  .kpi .delta.down { color: var(--red); }
+
+  .kpi .accent-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .kpi .accent-line.orange { background: var(--accent); }
+  .kpi .accent-line.green { background: var(--green); }
+  .kpi .accent-line.yellow { background: var(--yellow); }
+  .kpi .accent-line.blue { background: var(--blue); }
+
+  /* ========= PANEL / CARD ========= */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-head h3 {
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+
+  .panel-head .actions { display: flex; gap: 8px; }
+  .panel-body { padding: 12px 24px 24px; }
+
+  /* ========= BUTTONS ========= */
+  .btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-xs);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition: all var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn.primary {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .btn.primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 2px 8px rgba(255, 106, 26, 0.3);
+    transform: translateY(-0.5px);
+  }
+
+  .btn.primary:active { transform: translateY(0); }
+
+  .btn.ghost {
+    background: var(--bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+
+  .btn.ghost:hover {
+    background: #ececee;
+    border-color: var(--border-strong);
+  }
+
+  /* ========= GRID ========= */
+  .grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
+
+  /* ========= BAR CHART ========= */
+  .chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    height: 200px;
+    padding: 16px 8px 0;
+  }
+
+  .chart .col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .chart .bar {
+    width: 100%;
+    max-width: 36px;
+    border-radius: 6px 6px 2px 2px;
+    position: relative;
+    transition: height 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .chart .bar.solid-dark { background: var(--sidebar-bg); }
+  .chart .bar.solid-accent { background: var(--accent); }
+  .chart .bar.solid-red { background: var(--red); }
+  .chart .bar.solid-green { background: var(--green); }
+
+  .chart .bar.target {
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent, transparent 3px,
+      rgba(0,0,0,0.06) 3px,
+      rgba(0,0,0,0.06) 6px
+    );
+    border: 1.5px dashed var(--text-tertiary);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 6px 6px 2px 2px;
+  }
+
+  .chart .col .wrap-bar {
+    position: relative;
+    width: 100%;
+    max-width: 36px;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .chart .lbl {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ========= DONUT ========= */
+  .donut-wrap {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 20px 8px;
+  }
+
+  .donut {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .donut::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 65px; height: 65px;
+    background: var(--surface);
+    border-radius: 50%;
+  }
+
+  .legend div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .legend .sw {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .legend .pct {
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-left: 2px;
+  }
+
+  /* ========= TABLE ========= */
+  th, td {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    font-weight: 600;
+    background: var(--surface-secondary);
+    position: sticky;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tr:hover td {
+    background: rgba(0,0,0,0.015);
+  }
+
+  td { color: var(--text-primary); }
+
+  /* ========= STATUS PILLS ========= */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .pill.ok { background: var(--green-bg); color: #1a8a3e; }
+  .pill.warn { background: var(--yellow-bg); color: #9a6500; }
+  .pill.bad { background: var(--red-bg); color: var(--red); }
+
+  .pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ========= AVATARS ========= */
+  .avatar-sm {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #636366, #48484a);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 10px;
+    vertical-align: middle;
+    letter-spacing: -0.01em;
+  }
+
+  /* ========= FILTER ROW ========= */
+  .filter-row {
+    display: flex;
+    gap: 10px;
+    padding: 16px 24px 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-row select,
+  .filter-row input {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: var(--surface);
+    outline: none;
+    transition: all var(--transition);
+  }
+
+  .filter-row select:hover,
+  .filter-row input:hover {
+    border-color: var(--border-strong);
+  }
+
+  .filter-row select:focus,
+  .filter-row input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+
+  /* ========= STAT STRIP ========= */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 20px 24px;
+  }
+
+  .stat-strip .s {
+    text-align: center;
+    padding: 16px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+  }
+
+  .stat-strip .s .n {
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .stat-strip .s .l {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  /* ========= SCROLLBAR ========= */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 6px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+  /* ========= RESPONSIVE ========= */
+  @media (max-width: 1100px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .content { padding: 20px 16px 60px; }
+    .topbar { padding: 0 16px; }
+    .kpi-row { grid-template-columns: 1fr; }
+    .search-box { display: none; }
+
+    .mobile-toggle {
+      display: flex !important;
+    }
+  }
+
+  .mobile-toggle {
+    display: none;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    margin-right: 12px;
+  }
+
+  .mobile-toggle svg {
+    width: 18px;
+    height: 18px;
+    color: var(--text-primary);
+  }
+
+  /* overlay for mobile sidebar */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 25;
+  }
+
+  .sidebar-overlay.active { display: block; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Mobile overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ========= SIDEBAR ========= -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="mark">SV</div>
+      <div>
+        <div class="name">SAVVICE</div>
+        <div class="sub">Ops Console</div>
+      </div>
+    </div>
+
+    <div class="role-pill">
+      Viewing as
+      <select id="roleSelect" onchange="setRole(this.value)">
+        <option value="admin">Admin</option>
+        <option value="supervisor">Supervisor</option>
+        <option value="client">Client</option>
+      </select>
+    </div>
+
+    <nav class="sidenav" id="sidenav">
+      <div class="nav-section-label">Overview</div>
+      <button class="nav-item" data-view="dashboard" data-roles="admin,supervisor,client">
+        <span class="ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </span>
+        Dashboard
+      </button>
+
+      <div class="nav-section-label">Field Operations</div>
+      <button class="nav-item" data-view="activity" data-roles="admin,supervisor">
+        <span class="ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </span>
+        Daily Activity
+      </button>
+      <button class="nav-item" data-view="attendance" data-roles="admin,supervisor">
+        <span class="ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        Attendance
+      </button>
+      <button class="nav-item" data-view="manpower" data-roles="admin,supervisor">
+        <span class="ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </span>
+        Manpower
+      </button>
+      <button class="nav-item" data-view="equipment" data-roles="admin,supervisor">
+        <span class="ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </span>
+        Equipment
+      </button>
+
+      <div class="nav-section-label">Finance</div>
+      <button class="nav-item" data-view="billing" data-roles="admin,client">
+        <span class="ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </span>
+        Billing
+      </button>
+
+      <div class="nav-section-label">System</div>
+      <button class="nav-item" data-view="reports" data-roles="admin,client">
+        <span class="ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </span>
+        Reports
+      </button>
+      <button class="nav-item" data-view="admin" data-roles="admin">
+        <span class="ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </span>
+        Admin & Access
+      </button>
+    </nav>
+
+    <a href="index.html" style="display:flex;align-items:center;gap:8px;padding:12px 22px;color:rgba(255,255,255,0.55);font-size:13px;font-weight:500;transition:color 0.2s;" onmouseover="this.style.color='#ff6a1a'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Website
+    </a>
+    <div class="sidebar-foot">
+      <span class="sync-dot"></span>NLEX Bridge Contract<br>
+      <span style="margin-left: 12px;">Synced 2 min ago</span>
+    </div>
+  </aside>
+
+  <!-- ========= MAIN ========= -->
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;">
+        <button class="mobile-toggle" onclick="toggleSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div>
+          <h1 id="pageTitle">Dashboard</h1>
+          <div class="crumbs" id="pageCrumb">Overview / All teams / Today</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <span class="search-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input type="text" placeholder="Search team, ID, asset...">
+        </div>
+        <div class="avatar">JN</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ============ DASHBOARD ============ -->
+      <div class="view active" id="view-dashboard">
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="accent-line blue"></div>
+            <div class="label">Manpower Deployed Today</div>
+            <div class="value">142 / 156</div>
+            <div class="delta up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+              91% deployment rate
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="accent-line green"></div>
+            <div class="label">Attendance Logged</div>
+            <div class="value">138</div>
+            <div class="delta down">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+              4 absences, 2 on leave
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="accent-line yellow"></div>
+            <div class="label">Equipment Operational</div>
+            <div class="value">37 / 41</div>
+            <div class="delta down">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+              4 units under maintenance
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="accent-line orange"></div>
+            <div class="label">Billing — This Period</div>
+            <div class="value">&#8369;2.84M</div>
+            <div class="delta up">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+              On track vs target
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Target vs Actual Accomplishment</h3>
+              <div class="actions"><button class="btn ghost">This Month</button></div>
+            </div>
+            <div class="panel-body">
+              <div class="chart">
+                <div class="col">
+                  <div class="wrap-bar">
+                    <div class="bar target" style="height:88%"></div>
+                    <div class="bar solid-dark" style="height:74%"></div>
+                  </div>
+                  <div class="lbl">Drainage</div>
+                </div>
+                <div class="col">
+                  <div class="wrap-bar">
+                    <div class="bar target" style="height:80%"></div>
+                    <div class="bar solid-accent" style="height:91%"></div>
+                  </div>
+                  <div class="lbl">Bridge Epoxy</div>
+                </div>
+                <div class="col">
+                  <div class="wrap-bar">
+                    <div class="bar target" style="height:95%"></div>
+                    <div class="bar solid-red" style="height:60%"></div>
+                  </div>
+                  <div class="lbl">Bridge Routine</div>
+                </div>
+                <div class="col">
+                  <div class="wrap-bar">
+                    <div class="bar target" style="height:70%"></div>
+                    <div class="bar solid-green" style="height:82%"></div>
+                  </div>
+                  <div class="lbl">Vegetation</div>
+                </div>
+                <div class="col">
+                  <div class="wrap-bar">
+                    <div class="bar target" style="height:60%"></div>
+                    <div class="bar solid-dark" style="height:55%"></div>
+                  </div>
+                  <div class="lbl">Sweeping</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h3>Attendance Breakdown</h3></div>
+            <div class="panel-body">
+              <div class="donut-wrap">
+                <div class="donut" style="background: conic-gradient(var(--green) 0% 88%, var(--yellow) 88% 95%, var(--red) 95% 100%);"></div>
+                <div class="legend">
+                  <div><span class="sw" style="background:var(--green);"></span> Present <span class="pct">88%</span></div>
+                  <div><span class="sw" style="background:var(--yellow);"></span> On Leave <span class="pct">7%</span></div>
+                  <div><span class="sw" style="background:var(--red);"></span> Absent <span class="pct">5%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Recent Activity Submissions</h3>
+            <div class="actions"><button class="btn ghost" onclick="goTo('activity')">View All</button></div>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Team</th><th>Task</th><th>Location</th><th>Supervisor</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="avatar-sm">DC</span>Drainage Cleaning A</td><td>Catch basin clearing</td><td>KM 12+400 NB</td><td>R. Santos</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td></tr>
+              <tr><td><span class="avatar-sm">BE</span>Bridge Epoxy Team 2</td><td>Crack injection</td><td>Marilao Bridge</td><td>A. Cruz</td><td><span class="pill warn"><span class="dot"></span>Pending Review</span></td></tr>
+              <tr><td><span class="avatar-sm">BR</span>Bridge Routine Team 1</td><td>Joint inspection</td><td>Bocaue Bridge</td><td>M. Reyes</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td></tr>
+              <tr><td><span class="avatar-sm">VG</span>Vegetation Crew</td><td>Slope clearing</td><td>KM 18+200 SB</td><td>L. Garcia</td><td><span class="pill bad"><span class="dot"></span>Needs Correction</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ ACTIVITY ============ -->
+      <div class="view" id="view-activity">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Daily Activity Log</h3>
+            <div class="actions"><button class="btn ghost">Export</button><button class="btn primary">+ New Entry</button></div>
+          </div>
+          <div class="filter-row">
+            <select><option>All Teams</option><option>Drainage Cleaning</option><option>Bridge Epoxy</option><option>Bridge Routine</option></select>
+            <select><option>All Status</option><option>Approved</option><option>Pending</option><option>Needs Correction</option></select>
+            <input type="date" value="2026-06-28">
+          </div>
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Team</th><th>Task / Corrective Action</th><th>Location</th><th>Manpower</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Jun 28</td><td>Drainage Cleaning A</td><td>Catch basin clearing</td><td>KM 12+400 NB</td><td>6</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td><td><button class="btn ghost">View</button></td></tr>
+              <tr><td>Jun 28</td><td>Bridge Epoxy Team 2</td><td>Crack injection, Span 4</td><td>Marilao Bridge</td><td>4</td><td><span class="pill warn"><span class="dot"></span>Pending</span></td><td><button class="btn ghost">View</button></td></tr>
+              <tr><td>Jun 28</td><td>Bridge Routine Team 1</td><td>Expansion joint check</td><td>Bocaue Bridge</td><td>5</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td><td><button class="btn ghost">View</button></td></tr>
+              <tr><td>Jun 27</td><td>Vegetation Crew</td><td>Slope clearing &amp; debris removal</td><td>KM 18+200 SB</td><td>8</td><td><span class="pill bad"><span class="dot"></span>Needs Correction</span></td><td><button class="btn ghost">View</button></td></tr>
+              <tr><td>Jun 27</td><td>Mechanized Sweeper</td><td>Pre/post-trip inspection &amp; sweep run</td><td>NLEX Mainline KM 9–22</td><td>2</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td><td><button class="btn ghost">View</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ ATTENDANCE ============ -->
+      <div class="view" id="view-attendance">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Attendance — June 28, 2026</h3>
+            <div class="actions"><button class="btn ghost">Upload Sheet Photo</button><button class="btn primary">Mark Attendance</button></div>
+          </div>
+          <div class="stat-strip">
+            <div class="s"><div class="n" style="color:var(--green);">138</div><div class="l">Present</div></div>
+            <div class="s"><div class="n" style="color:var(--yellow);">10</div><div class="l">On Leave</div></div>
+            <div class="s"><div class="n" style="color:var(--red);">8</div><div class="l">Absent</div></div>
+          </div>
+          <div class="filter-row" style="padding-top:0;">
+            <select><option>All Teams</option><option>Drainage Cleaning</option><option>Bridge Epoxy</option></select>
+            <input type="date" value="2026-06-28">
+          </div>
+          <table>
+            <thead>
+              <tr><th>Employee</th><th>Team</th><th>Time In</th><th>Time Out</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="avatar-sm">RS</span>R. Santos</td><td>Drainage Cleaning A</td><td>6:58 AM</td><td>4:02 PM</td><td><span class="pill ok"><span class="dot"></span>Present</span></td></tr>
+              <tr><td><span class="avatar-sm">AC</span>A. Cruz</td><td>Bridge Epoxy Team 2</td><td>7:05 AM</td><td>4:10 PM</td><td><span class="pill ok"><span class="dot"></span>Present</span></td></tr>
+              <tr><td><span class="avatar-sm">MR</span>M. Reyes</td><td>Bridge Routine Team 1</td><td>—</td><td>—</td><td><span class="pill warn"><span class="dot"></span>On Leave</span></td></tr>
+              <tr><td><span class="avatar-sm">LG</span>L. Garcia</td><td>Vegetation Crew</td><td>—</td><td>—</td><td><span class="pill bad"><span class="dot"></span>Absent</span></td></tr>
+              <tr><td><span class="avatar-sm">JT</span>J. Torres</td><td>Mechanized Sweeper</td><td>6:45 AM</td><td>3:50 PM</td><td><span class="pill ok"><span class="dot"></span>Present</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ MANPOWER ============ -->
+      <div class="view" id="view-manpower">
+        <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
+          <div class="kpi"><div class="accent-line blue"></div><div class="label">Total Headcount</div><div class="value">156</div></div>
+          <div class="kpi"><div class="accent-line green"></div><div class="label">Active Teams</div><div class="value">9</div></div>
+          <div class="kpi"><div class="accent-line yellow"></div><div class="label">Vacant Slots</div><div class="value">3</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Manpower List</h3><div class="actions"><button class="btn ghost">Export</button><button class="btn primary">+ Add Personnel</button></div></div>
+          <div class="filter-row"><select><option>All Teams</option><option>Drainage Cleaning</option><option>Bridge Epoxy</option><option>Bridge Routine</option></select></div>
+          <table>
+            <thead>
+              <tr><th>Name</th><th>ID</th><th>Team</th><th>Role</th><th>Deployment</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="avatar-sm">RS</span>R. Santos</td><td>SV-0142</td><td>Drainage Cleaning A</td><td>Team Lead</td><td>KM 12+400 NB</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
+              <tr><td><span class="avatar-sm">AC</span>A. Cruz</td><td>SV-0188</td><td>Bridge Epoxy Team 2</td><td>Supervisor</td><td>Marilao Bridge</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
+              <tr><td><span class="avatar-sm">MR</span>M. Reyes</td><td>SV-0091</td><td>Bridge Routine Team 1</td><td>Technician</td><td>—</td><td><span class="pill warn"><span class="dot"></span>On Leave</span></td></tr>
+              <tr><td><span class="avatar-sm">LG</span>L. Garcia</td><td>SV-0205</td><td>Vegetation Crew</td><td>Laborer</td><td>—</td><td><span class="pill bad"><span class="dot"></span>Unassigned</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ EQUIPMENT ============ -->
+      <div class="view" id="view-equipment">
+        <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
+          <div class="kpi"><div class="accent-line blue"></div><div class="label">Total Units</div><div class="value">41</div></div>
+          <div class="kpi"><div class="accent-line green"></div><div class="label">Operational</div><div class="value">37</div></div>
+          <div class="kpi"><div class="accent-line yellow"></div><div class="label">Under Maintenance</div><div class="value">4</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Equipment Registry</h3><div class="actions"><button class="btn ghost">Maintenance Log</button><button class="btn primary">+ Add Equipment</button></div></div>
+          <table>
+            <thead>
+              <tr><th>Asset</th><th>Type</th><th>Assigned Team</th><th>Last Inspection</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Mechanized Sweeper 01</td><td>Vehicle</td><td>Sweeper Crew</td><td>Jun 28, 6:40 AM</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
+              <tr><td>Epoxy Injection Pump 03</td><td>Tool</td><td>Bridge Epoxy Team 2</td><td>Jun 27</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
+              <tr><td>Vactor Truck 02</td><td>Vehicle</td><td>Drainage Cleaning A</td><td>Jun 24</td><td><span class="pill warn"><span class="dot"></span>Under Maintenance</span></td></tr>
+              <tr><td>Brush Cutter Set (x6)</td><td>Tool</td><td>Vegetation Crew</td><td>Jun 26</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
+              <tr><td>Generator Unit 05</td><td>Equipment</td><td>Bridge Routine Team 1</td><td>Jun 20</td><td><span class="pill bad"><span class="dot"></span>Down</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ BILLING ============ -->
+      <div class="view" id="view-billing">
+        <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
+          <div class="kpi"><div class="accent-line orange"></div><div class="label">This Period Billed</div><div class="value">&#8369;2.84M</div></div>
+          <div class="kpi"><div class="accent-line yellow"></div><div class="label">Pending Approval</div><div class="value">&#8369;412K</div></div>
+          <div class="kpi"><div class="accent-line green"></div><div class="label">Collected (MTD)</div><div class="value">&#8369;2.31M</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Billing — NLEX Bridge Contract</h3><div class="actions"><button class="btn ghost">Download Statement</button><button class="btn primary">Generate Invoice</button></div></div>
+          <div class="filter-row"><select><option>May 2026</option><option selected>June 2026</option><option>July 2026 (Draft)</option></select></div>
+          <table>
+            <thead>
+              <tr><th>Line Item</th><th>Category</th><th>Period</th><th>Amount</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Manpower Deployment — Drainage</td><td>Labor</td><td>Jun 1–28</td><td>&#8369;1,120,000</td><td><span class="pill ok"><span class="dot"></span>Billed</span></td></tr>
+              <tr><td>Bridge Epoxy Works</td><td>Materials + Labor</td><td>Jun 1–28</td><td>&#8369;840,500</td><td><span class="pill ok"><span class="dot"></span>Billed</span></td></tr>
+              <tr><td>Equipment Rental — Vactor Truck</td><td>Equipment</td><td>Jun 1–28</td><td>&#8369;265,000</td><td><span class="pill warn"><span class="dot"></span>Pending Approval</span></td></tr>
+              <tr><td>Vegetation Maintenance</td><td>Labor</td><td>Jun 1–28</td><td>&#8369;412,300</td><td><span class="pill warn"><span class="dot"></span>Pending Approval</span></td></tr>
+              <tr><td>Mechanized Sweeping</td><td>Equipment + Labor</td><td>Jun 1–28</td><td>&#8369;204,800</td><td><span class="pill ok"><span class="dot"></span>Billed</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ REPORTS ============ -->
+      <div class="view" id="view-reports">
+        <div class="panel">
+          <div class="panel-head"><h3>Reports</h3></div>
+          <table>
+            <thead>
+              <tr><th>Report</th><th>Coverage</th><th>Last Generated</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Target vs Actual Accomplishment</td><td>All teams, June 2026</td><td>Jun 28, 7:00 AM</td><td><button class="btn ghost">Open</button></td></tr>
+              <tr><td>Attendance Summary</td><td>All teams, June 2026</td><td>Jun 28, 7:00 AM</td><td><button class="btn ghost">Open</button></td></tr>
+              <tr><td>Equipment Utilization</td><td>All assets, June 2026</td><td>Jun 27, 6:00 PM</td><td><button class="btn ghost">Open</button></td></tr>
+              <tr><td>Billing Statement</td><td>NLEX Bridge Contract</td><td>Jun 28, 8:15 AM</td><td><button class="btn ghost">Open</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ ADMIN ============ -->
+      <div class="view" id="view-admin">
+        <div class="panel">
+          <div class="panel-head"><h3>Users & Access</h3><div class="actions"><button class="btn primary">+ Invite User</button></div></div>
+          <table>
+            <thead>
+              <tr><th>User</th><th>Role</th><th>Access</th><th>Last Active</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="avatar-sm">JN</span>J. Newell</td><td>Admin</td><td>Full access</td><td>Now</td><td><button class="btn ghost">Manage</button></td></tr>
+              <tr><td><span class="avatar-sm">RS</span>R. Santos</td><td>Supervisor</td><td>Activity, Attendance, Equipment</td><td>2 hrs ago</td><td><button class="btn ghost">Manage</button></td></tr>
+              <tr><td><span class="avatar-sm">MP</span>MPTC Client Acct</td><td>Client</td><td>Billing, Reports (view only)</td><td>Yesterday</td><td><button class="btn ghost">Manage</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  const titles = {
+    dashboard: ["Dashboard", "Overview / All teams / Today"],
+    activity: ["Daily Activity", "Field Operations / Activity Log"],
+    attendance: ["Attendance", "Field Operations / Attendance"],
+    manpower: ["Manpower", "Field Operations / Personnel"],
+    equipment: ["Equipment", "Field Operations / Asset Registry"],
+    billing: ["Billing", "Finance / NLEX Bridge Contract"],
+    reports: ["Reports", "System / Reports"],
+    admin: ["Admin & Access", "System / Users & Roles"]
+  };
+
+  function goTo(view) {
+    document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+    document.getElementById('view-' + view).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+    var navBtn = document.querySelector('.nav-item[data-view="' + view + '"]');
+    if (navBtn) navBtn.classList.add('active');
+    document.getElementById('pageTitle').textContent = titles[view][0];
+    document.getElementById('pageCrumb').textContent = titles[view][1];
+    closeSidebar();
+  }
+
+  document.querySelectorAll('.nav-item').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (btn.hasAttribute('disabled')) return;
+      goTo(btn.dataset.view);
+    });
+  });
+
+  function setRole(role) {
+    document.querySelectorAll('.nav-item').forEach(function(btn) {
+      var allowed = btn.dataset.roles.split(',');
+      if (allowed.indexOf(role) !== -1) {
+        btn.removeAttribute('disabled');
+      } else {
+        btn.setAttribute('disabled', 'true');
+      }
+    });
+    var activeBtn = document.querySelector('.nav-item.active');
+    if (activeBtn && activeBtn.hasAttribute('disabled')) {
+      goTo('dashboard');
+    }
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+  }
+
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+  }
+
+  setRole('admin');
+  goTo('dashboard');
+</script>
+
+</body>
+</html>
