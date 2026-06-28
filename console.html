@@ -759,6 +759,24 @@
     font-weight: 500;
   }
 
+  /* ========= EMPTY STATE ========= */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .empty-state p {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    max-width: 280px;
+    line-height: 1.6;
+  }
+
   /* ========= ATTENDANCE UPLOAD ========= */
   .upload-zone {
     border: 2px dashed var(--border-strong);
@@ -1085,8 +1103,8 @@
       Back to Website
     </a>
     <div class="sidebar-foot">
-      <span class="sync-dot"></span>NLEX Bridge Contract<br>
-      <span style="margin-left: 12px;">Synced 2 min ago</span>
+      <span class="sync-dot"></span>NLEX IRT Contract<br>
+      <span style="margin-left: 12px;">Ready</span>
     </div>
   </aside>
 
@@ -1109,7 +1127,9 @@
           </span>
           <input type="text" placeholder="Search team, ID, asset...">
         </div>
-        <div class="avatar">JN</div>
+        <div class="avatar">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
       </div>
     </div>
 
@@ -1121,38 +1141,26 @@
           <div class="kpi">
             <div class="accent-line blue"></div>
             <div class="label">Manpower Deployed Today</div>
-            <div class="value">142 / 156</div>
-            <div class="delta up">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
-              91% deployment rate
-            </div>
+            <div class="value">— / 59</div>
+            <div class="delta" style="color:var(--text-tertiary);">No data yet</div>
           </div>
           <div class="kpi">
             <div class="accent-line green"></div>
             <div class="label">Attendance Logged</div>
-            <div class="value">138</div>
-            <div class="delta down">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
-              4 absences, 2 on leave
-            </div>
+            <div class="value">—</div>
+            <div class="delta" style="color:var(--text-tertiary);">No data yet</div>
           </div>
           <div class="kpi">
             <div class="accent-line yellow"></div>
             <div class="label">Equipment Operational</div>
-            <div class="value">37 / 41</div>
-            <div class="delta down">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
-              4 units under maintenance
-            </div>
+            <div class="value">— / —</div>
+            <div class="delta" style="color:var(--text-tertiary);">No data yet</div>
           </div>
           <div class="kpi">
             <div class="accent-line orange"></div>
             <div class="label">Billing — This Period</div>
-            <div class="value">&#8369;2.84M</div>
-            <div class="delta up">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
-              On track vs target
-            </div>
+            <div class="value">—</div>
+            <div class="delta" style="color:var(--text-tertiary);">No data yet</div>
           </div>
         </div>
 
@@ -1163,28 +1171,9 @@
               <div class="actions"><button class="btn ghost">This Month</button></div>
             </div>
             <div class="panel-body">
-              <div class="chart">
-                <div class="col">
-                  <div class="wrap-bar">
-                    <div class="bar target" style="height:70%"></div>
-                    <div class="bar solid-green" style="height:82%"></div>
-                  </div>
-                  <div class="lbl">Vegetation</div>
-                </div>
-                <div class="col">
-                  <div class="wrap-bar">
-                    <div class="bar target" style="height:60%"></div>
-                    <div class="bar solid-dark" style="height:55%"></div>
-                  </div>
-                  <div class="lbl">Sweeping</div>
-                </div>
-                <div class="col">
-                  <div class="wrap-bar">
-                    <div class="bar target" style="height:85%"></div>
-                    <div class="bar solid-accent" style="height:78%"></div>
-                  </div>
-                  <div class="lbl">IRT Ops</div>
-                </div>
+              <div class="empty-state">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <p>No accomplishment data recorded yet.</p>
               </div>
             </div>
           </div>
@@ -1192,13 +1181,9 @@
           <div class="panel">
             <div class="panel-head"><h3>Attendance Breakdown</h3></div>
             <div class="panel-body">
-              <div class="donut-wrap">
-                <div class="donut" style="background: conic-gradient(var(--green) 0% 88%, var(--yellow) 88% 95%, var(--red) 95% 100%);"></div>
-                <div class="legend">
-                  <div><span class="sw" style="background:var(--green);"></span> Present <span class="pct">88%</span></div>
-                  <div><span class="sw" style="background:var(--yellow);"></span> On Leave <span class="pct">7%</span></div>
-                  <div><span class="sw" style="background:var(--red);"></span> Absent <span class="pct">5%</span></div>
-                </div>
+              <div class="empty-state">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                <p>Mark attendance to see the breakdown.</p>
               </div>
             </div>
           </div>
@@ -1214,10 +1199,7 @@
               <tr><th>Team</th><th>Task</th><th>Location</th><th>Supervisor</th><th>Status</th></tr>
             </thead>
             <tbody>
-              <tr><td><span class="avatar-sm">IR</span>NLEX IRT Team</td><td>Guardrail repair — Span 3</td><td>KM 14+200 NB</td><td>M.A. De Guzman</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td></tr>
-              <tr><td><span class="avatar-sm">VG</span>Vegetation Crew</td><td>Slope clearing</td><td>KM 18+200 SB</td><td>I. Fernandez</td><td><span class="pill warn"><span class="dot"></span>Pending Review</span></td></tr>
-              <tr><td><span class="avatar-sm">SW</span>Mechanized Sweeper</td><td>Pre/post-trip &amp; sweep run</td><td>NLEX Mainline KM 9–22</td><td>F. Aquino</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td></tr>
-              <tr><td><span class="avatar-sm">IR</span>NLEX IRT Team</td><td>Median barrier patching</td><td>Bocaue Interchange</td><td>A. Pascual</td><td><span class="pill bad"><span class="dot"></span>Needs Correction</span></td></tr>
+              <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No activity submissions yet. Click <strong>+ New Entry</strong> in Daily Activity to get started.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1231,7 +1213,7 @@
             <div class="actions"><button class="btn ghost">Export</button><button class="btn primary">+ New Entry</button></div>
           </div>
           <div class="filter-row">
-            <select><option>All Teams</option><option>NLEX IRT</option><option>Vegetation Crew</option><option>Mechanized Sweeper</option></select>
+            <select><option>All Teams</option><option>NLEX IRT</option></select>
             <select><option>All Status</option><option>Approved</option><option>Pending</option><option>Needs Correction</option></select>
             <input type="date" value="2026-06-28">
           </div>
@@ -1240,10 +1222,7 @@
               <tr><th>Date</th><th>Team</th><th>Task / Corrective Action</th><th>Location</th><th>Manpower</th><th>Status</th><th></th></tr>
             </thead>
             <tbody>
-              <tr><td>Jun 28</td><td>NLEX IRT Team</td><td>Guardrail repair — Span 3</td><td>KM 14+200 NB</td><td>12</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td><td><button class="btn ghost">View</button></td></tr>
-              <tr><td>Jun 28</td><td>NLEX IRT Team</td><td>Median barrier patching</td><td>Bocaue Interchange</td><td>8</td><td><span class="pill warn"><span class="dot"></span>Pending</span></td><td><button class="btn ghost">View</button></td></tr>
-              <tr><td>Jun 27</td><td>Vegetation Crew</td><td>Slope clearing &amp; debris removal</td><td>KM 18+200 SB</td><td>8</td><td><span class="pill bad"><span class="dot"></span>Needs Correction</span></td><td><button class="btn ghost">View</button></td></tr>
-              <tr><td>Jun 27</td><td>Mechanized Sweeper</td><td>Pre/post-trip inspection &amp; sweep run</td><td>NLEX Mainline KM 9–22</td><td>2</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td><td><button class="btn ghost">View</button></td></tr>
+              <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No activity entries yet. Click <strong>+ New Entry</strong> to log daily activity.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1370,23 +1349,18 @@
       <!-- ============ MANPOWER ============ -->
       <div class="view" id="view-manpower">
         <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
-          <div class="kpi"><div class="accent-line blue"></div><div class="label">Total Headcount</div><div class="value">156</div></div>
-          <div class="kpi"><div class="accent-line green"></div><div class="label">Active Teams</div><div class="value">9</div></div>
-          <div class="kpi"><div class="accent-line yellow"></div><div class="label">Vacant Slots</div><div class="value">3</div></div>
+          <div class="kpi"><div class="accent-line blue"></div><div class="label">Total Headcount</div><div class="value">59</div></div>
+          <div class="kpi"><div class="accent-line green"></div><div class="label">Active Teams</div><div class="value">1</div></div>
+          <div class="kpi"><div class="accent-line yellow"></div><div class="label">Vacant Slots</div><div class="value">—</div></div>
         </div>
         <div class="panel">
           <div class="panel-head"><h3>Manpower List</h3><div class="actions"><button class="btn ghost">Export</button><button class="btn primary">+ Add Personnel</button></div></div>
-          <div class="filter-row"><select><option>All Teams</option><option>NLEX IRT</option><option>Vegetation Crew</option><option>Mechanized Sweeper</option></select></div>
+          <div class="filter-row"><select><option>All Teams</option><option>NLEX IRT</option></select></div>
           <table>
             <thead>
               <tr><th>Name</th><th>ID</th><th>Team</th><th>Role</th><th>Deployment</th><th>Status</th></tr>
             </thead>
-            <tbody>
-              <tr><td><span class="avatar-sm">MD</span>M.A. De Guzman</td><td>1</td><td>NLEX IRT</td><td>Supervisor</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
-              <tr><td><span class="avatar-sm">MA</span>Marcial Agustin</td><td>2</td><td>NLEX IRT</td><td>Warehouseman</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
-              <tr><td><span class="avatar-sm">AL</span>Agapito Lapinig</td><td>3</td><td>NLEX IRT</td><td>Leadman</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
-              <tr><td><span class="avatar-sm">MG</span>Michael Geronimo</td><td>4</td><td>NLEX IRT</td><td>Operator 1</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
-              <tr><td><span class="avatar-sm">JD</span>Jervis De Jesus</td><td>5</td><td>NLEX IRT</td><td>Rigger</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
+            <tbody id="manpower-table-body">
             </tbody>
           </table>
         </div>
@@ -1395,9 +1369,9 @@
       <!-- ============ EQUIPMENT ============ -->
       <div class="view" id="view-equipment">
         <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
-          <div class="kpi"><div class="accent-line blue"></div><div class="label">Total Units</div><div class="value">41</div></div>
-          <div class="kpi"><div class="accent-line green"></div><div class="label">Operational</div><div class="value">37</div></div>
-          <div class="kpi"><div class="accent-line yellow"></div><div class="label">Under Maintenance</div><div class="value">4</div></div>
+          <div class="kpi"><div class="accent-line blue"></div><div class="label">Total Units</div><div class="value">—</div></div>
+          <div class="kpi"><div class="accent-line green"></div><div class="label">Operational</div><div class="value">—</div></div>
+          <div class="kpi"><div class="accent-line yellow"></div><div class="label">Under Maintenance</div><div class="value">—</div></div>
         </div>
         <div class="panel">
           <div class="panel-head"><h3>Equipment Registry</h3><div class="actions"><button class="btn ghost">Maintenance Log</button><button class="btn primary">+ Add Equipment</button></div></div>
@@ -1406,11 +1380,7 @@
               <tr><th>Asset</th><th>Type</th><th>Assigned Team</th><th>Last Inspection</th><th>Status</th></tr>
             </thead>
             <tbody>
-              <tr><td>Mechanized Sweeper 01</td><td>Vehicle</td><td>Mechanized Sweeper</td><td>Jun 28, 6:40 AM</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
-              <tr><td>Crane Truck 01</td><td>Vehicle</td><td>NLEX IRT</td><td>Jun 28</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
-              <tr><td>Welding Machine Set</td><td>Tool</td><td>NLEX IRT</td><td>Jun 27</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
-              <tr><td>Brush Cutter Set (x6)</td><td>Tool</td><td>Vegetation Crew</td><td>Jun 26</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
-              <tr><td>Generator Unit 05</td><td>Equipment</td><td>NLEX IRT</td><td>Jun 20</td><td><span class="pill bad"><span class="dot"></span>Down</span></td></tr>
+              <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No equipment registered yet. Click <strong>+ Add Equipment</strong> to get started.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1419,22 +1389,19 @@
       <!-- ============ BILLING ============ -->
       <div class="view" id="view-billing">
         <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
-          <div class="kpi"><div class="accent-line orange"></div><div class="label">This Period Billed</div><div class="value">&#8369;2.84M</div></div>
-          <div class="kpi"><div class="accent-line yellow"></div><div class="label">Pending Approval</div><div class="value">&#8369;412K</div></div>
-          <div class="kpi"><div class="accent-line green"></div><div class="label">Collected (MTD)</div><div class="value">&#8369;2.31M</div></div>
+          <div class="kpi"><div class="accent-line orange"></div><div class="label">This Period Billed</div><div class="value">—</div></div>
+          <div class="kpi"><div class="accent-line yellow"></div><div class="label">Pending Approval</div><div class="value">—</div></div>
+          <div class="kpi"><div class="accent-line green"></div><div class="label">Collected (MTD)</div><div class="value">—</div></div>
         </div>
         <div class="panel">
-          <div class="panel-head"><h3>Billing — NLEX Bridge Contract</h3><div class="actions"><button class="btn ghost">Download Statement</button><button class="btn primary">Generate Invoice</button></div></div>
-          <div class="filter-row"><select><option>May 2026</option><option selected>June 2026</option><option>July 2026 (Draft)</option></select></div>
+          <div class="panel-head"><h3>Billing — NLEX IRT Contract</h3><div class="actions"><button class="btn ghost">Download Statement</button><button class="btn primary">Generate Invoice</button></div></div>
+          <div class="filter-row"><select><option selected>June 2026</option></select></div>
           <table>
             <thead>
               <tr><th>Line Item</th><th>Category</th><th>Period</th><th>Amount</th><th>Status</th></tr>
             </thead>
             <tbody>
-              <tr><td>NLEX IRT Manpower Deployment</td><td>Labor</td><td>Jun 1–28</td><td>&#8369;1,960,500</td><td><span class="pill ok"><span class="dot"></span>Billed</span></td></tr>
-              <tr><td>Equipment Rental — Crane &amp; Welding</td><td>Equipment</td><td>Jun 1–28</td><td>&#8369;265,000</td><td><span class="pill warn"><span class="dot"></span>Pending Approval</span></td></tr>
-              <tr><td>Vegetation Maintenance</td><td>Labor</td><td>Jun 1–28</td><td>&#8369;412,300</td><td><span class="pill warn"><span class="dot"></span>Pending Approval</span></td></tr>
-              <tr><td>Mechanized Sweeping</td><td>Equipment + Labor</td><td>Jun 1–28</td><td>&#8369;204,800</td><td><span class="pill ok"><span class="dot"></span>Billed</span></td></tr>
+              <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No billing entries yet. Click <strong>Generate Invoice</strong> to create one.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1449,10 +1416,7 @@
               <tr><th>Report</th><th>Coverage</th><th>Last Generated</th><th></th></tr>
             </thead>
             <tbody>
-              <tr><td>Target vs Actual Accomplishment</td><td>All teams, June 2026</td><td>Jun 28, 7:00 AM</td><td><button class="btn ghost">Open</button></td></tr>
-              <tr><td>Attendance Summary</td><td>All teams, June 2026</td><td>Jun 28, 7:00 AM</td><td><button class="btn ghost">Open</button></td></tr>
-              <tr><td>Equipment Utilization</td><td>All assets, June 2026</td><td>Jun 27, 6:00 PM</td><td><button class="btn ghost">Open</button></td></tr>
-              <tr><td>Billing Statement</td><td>NLEX Bridge Contract</td><td>Jun 28, 8:15 AM</td><td><button class="btn ghost">Open</button></td></tr>
+              <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No reports generated yet. Reports will appear here once data is recorded.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1467,9 +1431,7 @@
               <tr><th>User</th><th>Role</th><th>Access</th><th>Last Active</th><th></th></tr>
             </thead>
             <tbody>
-              <tr><td><span class="avatar-sm">JN</span>J. Newell</td><td>Admin</td><td>Full access</td><td>Now</td><td><button class="btn ghost">Manage</button></td></tr>
-              <tr><td><span class="avatar-sm">RS</span>R. Santos</td><td>Supervisor</td><td>Activity, Attendance, Equipment</td><td>2 hrs ago</td><td><button class="btn ghost">Manage</button></td></tr>
-              <tr><td><span class="avatar-sm">MP</span>MPTC Client Acct</td><td>Client</td><td>Billing, Reports (view only)</td><td>Yesterday</td><td><button class="btn ghost">Manage</button></td></tr>
+              <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No users configured yet. Click <strong>+ Invite User</strong> to add team members.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1486,7 +1448,7 @@
     attendance: ["Attendance", "Field Operations / Attendance"],
     manpower: ["Manpower", "Field Operations / Personnel"],
     equipment: ["Equipment", "Field Operations / Asset Registry"],
-    billing: ["Billing", "Finance / NLEX Bridge Contract"],
+    billing: ["Billing", "Finance / NLEX IRT Contract"],
     reports: ["Reports", "System / Reports"],
     admin: ["Admin & Access", "System / Users & Roles"]
   };
@@ -1542,6 +1504,24 @@
   attendanceData = nlex_irt_manpower.map(function(e) {
     return { id: e.id, name: e.name, team: e.team, role: e.role, status: 'unmarked', selected: false };
   });
+
+  // Populate manpower table from real data
+  var mpBody = document.getElementById('manpower-table-body');
+  if (mpBody) {
+    var mpHtml = '';
+    nlex_irt_manpower.forEach(function(emp) {
+      var initials = emp.name.split(/[\s.]+/).filter(function(p) { return p.length > 0; }).map(function(p) { return p[0]; }).join('').toUpperCase().substring(0, 2);
+      mpHtml += '<tr>' +
+        '<td><span class="avatar-sm">' + initials + '</span>' + emp.name + '</td>' +
+        '<td>' + emp.id + '</td>' +
+        '<td>' + emp.team + '</td>' +
+        '<td>' + emp.role + '</td>' +
+        '<td>NLEX Corridor</td>' +
+        '<td><span class="pill ok"><span class="dot"></span>Active</span></td>' +
+      '</tr>';
+    });
+    mpBody.innerHTML = mpHtml;
+  }
 
   setRole('admin');
   goTo('dashboard');
