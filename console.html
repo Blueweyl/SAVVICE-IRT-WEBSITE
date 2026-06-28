@@ -1515,6 +1515,10 @@
     document.getElementById('pageTitle').textContent = titles[view][0];
     document.getElementById('pageCrumb').textContent = titles[view][1];
     closeSidebar();
+
+    if (view === 'attendance' && attendanceData.length > 0) {
+      activateWorkspace();
+    }
   }
 
   document.querySelectorAll('.nav-item').forEach(function(btn) {
@@ -1548,6 +1552,11 @@
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('active');
   }
+
+  // Auto-load NLEX IRT manpower into attendance
+  attendanceData = nlex_irt_manpower.map(function(e) {
+    return { id: e.id, name: e.name, team: e.team, role: e.role, status: 'unmarked', selected: false };
+  });
 
   setRole('admin');
   goTo('dashboard');
@@ -1660,25 +1669,73 @@
     return -1;
   }
 
+  var nlex_irt_manpower = [
+    { id: '1', name: 'Mark Anthony De Guzman', team: 'NLEX IRT', role: 'Supervisor', status: 'unmarked', selected: false },
+    { id: '2', name: 'Marcial Agustin', team: 'NLEX IRT', role: 'Warehouseman', status: 'unmarked', selected: false },
+    { id: '3', name: 'Agapito Lapinig', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '4', name: 'Michael Geronimo', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '5', name: 'Jervis De Jesus', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '6', name: 'Romy Pongautan', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '7', name: 'Romar Roxas', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '8', name: 'Rellinito Polintan', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '9', name: 'Roso Gamones', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '10', name: 'Joel Lecaros', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '11', name: 'Emil Reyes', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '12', name: 'Edsel Juntilla', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '13', name: 'Alvin Delos Santos', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '14', name: 'Jaymark Villafania', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '15', name: 'Rizaldy Romaquin', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '16', name: 'Arman Villafuerte', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '17', name: 'Elino Sanchez', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '18', name: 'Elino Guinarez', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '19', name: 'Crisanto Esguerra', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '20', name: 'Joel Olarte', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '21', name: 'Emmanuel Sandrino', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '22', name: 'Erwin Clarin', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '23', name: 'Rodel De Leon', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '24', name: 'Rolito Alico', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '25', name: 'Gabriel Alcoriza', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '26', name: 'Crismark Sabino', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '27', name: 'John Robert Teano', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '28', name: 'Diether Juan', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '29', name: 'Shagie Villa', team: 'NLEX IRT', role: 'Operator 3', status: 'unmarked', selected: false },
+    { id: '30', name: 'Heracleo Martir', team: 'NLEX IRT', role: 'Operator 3', status: 'unmarked', selected: false },
+    { id: '31', name: 'Florentino Barcenas', team: 'NLEX IRT', role: 'Operator 3', status: 'unmarked', selected: false },
+    { id: '32', name: 'Ferdinand Ortega', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '33', name: 'Reginal Villacorta', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '34', name: 'Jose Zaballa', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '35', name: 'Mark Gil Ferrer', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '36', name: 'Joel Sunga', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '37', name: 'Rowel Capalad', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '38', name: 'Resty Dizon', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '39', name: 'Felix Manalad', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '40', name: 'Renny Boy Furigay', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '41', name: 'Patrick Cruz', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '42', name: 'Jonas Roble', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '43', name: 'Cecilio Umali', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '44', name: 'Francis Monterde', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '45', name: 'Jayson Amparo', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '46', name: 'Lester Bautista', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '47', name: 'Alvin Guliman', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '48', name: 'Manolito Eusebio', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '49', name: 'Nestor Besas', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '50', name: 'Mike Savares', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '51', name: 'Jancen Balajadia', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '52', name: 'Ariel Pascual', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '53', name: 'Dheniel Escartin', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '54', name: 'Adrian Mercado', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '55', name: 'Kenneth Baello', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '56', name: 'Jobert Delos Santos', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '57', name: 'Carlito Clemente Jr.', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '58', name: 'Bencil Pedra', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '59', name: 'Jonrel Ocang', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false }
+  ];
+
   function loadSampleData() {
-    attendanceData = [
-      { id: 'SV-0142', name: 'R. Santos', team: 'Drainage Cleaning A', role: 'Team Lead', status: 'unmarked', selected: false },
-      { id: 'SV-0188', name: 'A. Cruz', team: 'Bridge Epoxy Team 2', role: 'Supervisor', status: 'unmarked', selected: false },
-      { id: 'SV-0091', name: 'M. Reyes', team: 'Bridge Routine Team 1', role: 'Technician', status: 'unmarked', selected: false },
-      { id: 'SV-0205', name: 'L. Garcia', team: 'Vegetation Crew', role: 'Laborer', status: 'unmarked', selected: false },
-      { id: 'SV-0110', name: 'J. Torres', team: 'Mechanized Sweeper', role: 'Operator', status: 'unmarked', selected: false },
-      { id: 'SV-0223', name: 'P. Ramos', team: 'Drainage Cleaning A', role: 'Laborer', status: 'unmarked', selected: false },
-      { id: 'SV-0245', name: 'D. Villanueva', team: 'Bridge Epoxy Team 2', role: 'Technician', status: 'unmarked', selected: false },
-      { id: 'SV-0301', name: 'K. Mendoza', team: 'Vegetation Crew', role: 'Laborer', status: 'unmarked', selected: false },
-      { id: 'SV-0312', name: 'E. Bautista', team: 'Bridge Routine Team 1', role: 'Team Lead', status: 'unmarked', selected: false },
-      { id: 'SV-0330', name: 'F. Aquino', team: 'Mechanized Sweeper', role: 'Operator', status: 'unmarked', selected: false },
-      { id: 'SV-0344', name: 'G. Navarro', team: 'Drainage Cleaning A', role: 'Laborer', status: 'unmarked', selected: false },
-      { id: 'SV-0358', name: 'H. Castillo', team: 'Bridge Epoxy Team 2', role: 'Laborer', status: 'unmarked', selected: false },
-      { id: 'SV-0371', name: 'I. Fernandez', team: 'Vegetation Crew', role: 'Supervisor', status: 'unmarked', selected: false },
-      { id: 'SV-0389', name: 'C. Dela Cruz', team: 'Bridge Routine Team 1', role: 'Laborer', status: 'unmarked', selected: false },
-      { id: 'SV-0402', name: 'B. Gonzales', team: 'Mechanized Sweeper', role: 'Laborer', status: 'unmarked', selected: false }
-    ];
-    showToast(attendanceData.length + ' sample employees loaded.', 'success');
+    attendanceData = nlex_irt_manpower.map(function(e) {
+      return { id: e.id, name: e.name, team: e.team, role: e.role, status: 'unmarked', selected: false };
+    });
+    showToast(attendanceData.length + ' NLEX IRT employees loaded.', 'success');
     activateWorkspace();
   }
 
