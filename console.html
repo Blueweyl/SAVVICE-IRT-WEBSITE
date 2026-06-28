@@ -1166,27 +1166,6 @@
               <div class="chart">
                 <div class="col">
                   <div class="wrap-bar">
-                    <div class="bar target" style="height:88%"></div>
-                    <div class="bar solid-dark" style="height:74%"></div>
-                  </div>
-                  <div class="lbl">Drainage</div>
-                </div>
-                <div class="col">
-                  <div class="wrap-bar">
-                    <div class="bar target" style="height:80%"></div>
-                    <div class="bar solid-accent" style="height:91%"></div>
-                  </div>
-                  <div class="lbl">Bridge Epoxy</div>
-                </div>
-                <div class="col">
-                  <div class="wrap-bar">
-                    <div class="bar target" style="height:95%"></div>
-                    <div class="bar solid-red" style="height:60%"></div>
-                  </div>
-                  <div class="lbl">Bridge Routine</div>
-                </div>
-                <div class="col">
-                  <div class="wrap-bar">
                     <div class="bar target" style="height:70%"></div>
                     <div class="bar solid-green" style="height:82%"></div>
                   </div>
@@ -1198,6 +1177,13 @@
                     <div class="bar solid-dark" style="height:55%"></div>
                   </div>
                   <div class="lbl">Sweeping</div>
+                </div>
+                <div class="col">
+                  <div class="wrap-bar">
+                    <div class="bar target" style="height:85%"></div>
+                    <div class="bar solid-accent" style="height:78%"></div>
+                  </div>
+                  <div class="lbl">IRT Ops</div>
                 </div>
               </div>
             </div>
@@ -1228,10 +1214,10 @@
               <tr><th>Team</th><th>Task</th><th>Location</th><th>Supervisor</th><th>Status</th></tr>
             </thead>
             <tbody>
-              <tr><td><span class="avatar-sm">DC</span>Drainage Cleaning A</td><td>Catch basin clearing</td><td>KM 12+400 NB</td><td>R. Santos</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td></tr>
-              <tr><td><span class="avatar-sm">BE</span>Bridge Epoxy Team 2</td><td>Crack injection</td><td>Marilao Bridge</td><td>A. Cruz</td><td><span class="pill warn"><span class="dot"></span>Pending Review</span></td></tr>
-              <tr><td><span class="avatar-sm">BR</span>Bridge Routine Team 1</td><td>Joint inspection</td><td>Bocaue Bridge</td><td>M. Reyes</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td></tr>
-              <tr><td><span class="avatar-sm">VG</span>Vegetation Crew</td><td>Slope clearing</td><td>KM 18+200 SB</td><td>L. Garcia</td><td><span class="pill bad"><span class="dot"></span>Needs Correction</span></td></tr>
+              <tr><td><span class="avatar-sm">IR</span>NLEX IRT Team</td><td>Guardrail repair — Span 3</td><td>KM 14+200 NB</td><td>M.A. De Guzman</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td></tr>
+              <tr><td><span class="avatar-sm">VG</span>Vegetation Crew</td><td>Slope clearing</td><td>KM 18+200 SB</td><td>I. Fernandez</td><td><span class="pill warn"><span class="dot"></span>Pending Review</span></td></tr>
+              <tr><td><span class="avatar-sm">SW</span>Mechanized Sweeper</td><td>Pre/post-trip &amp; sweep run</td><td>NLEX Mainline KM 9–22</td><td>F. Aquino</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td></tr>
+              <tr><td><span class="avatar-sm">IR</span>NLEX IRT Team</td><td>Median barrier patching</td><td>Bocaue Interchange</td><td>A. Pascual</td><td><span class="pill bad"><span class="dot"></span>Needs Correction</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1245,7 +1231,7 @@
             <div class="actions"><button class="btn ghost">Export</button><button class="btn primary">+ New Entry</button></div>
           </div>
           <div class="filter-row">
-            <select><option>All Teams</option><option>Drainage Cleaning</option><option>Bridge Epoxy</option><option>Bridge Routine</option></select>
+            <select><option>All Teams</option><option>NLEX IRT</option><option>Vegetation Crew</option><option>Mechanized Sweeper</option></select>
             <select><option>All Status</option><option>Approved</option><option>Pending</option><option>Needs Correction</option></select>
             <input type="date" value="2026-06-28">
           </div>
@@ -1254,9 +1240,8 @@
               <tr><th>Date</th><th>Team</th><th>Task / Corrective Action</th><th>Location</th><th>Manpower</th><th>Status</th><th></th></tr>
             </thead>
             <tbody>
-              <tr><td>Jun 28</td><td>Drainage Cleaning A</td><td>Catch basin clearing</td><td>KM 12+400 NB</td><td>6</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td><td><button class="btn ghost">View</button></td></tr>
-              <tr><td>Jun 28</td><td>Bridge Epoxy Team 2</td><td>Crack injection, Span 4</td><td>Marilao Bridge</td><td>4</td><td><span class="pill warn"><span class="dot"></span>Pending</span></td><td><button class="btn ghost">View</button></td></tr>
-              <tr><td>Jun 28</td><td>Bridge Routine Team 1</td><td>Expansion joint check</td><td>Bocaue Bridge</td><td>5</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td><td><button class="btn ghost">View</button></td></tr>
+              <tr><td>Jun 28</td><td>NLEX IRT Team</td><td>Guardrail repair — Span 3</td><td>KM 14+200 NB</td><td>12</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td><td><button class="btn ghost">View</button></td></tr>
+              <tr><td>Jun 28</td><td>NLEX IRT Team</td><td>Median barrier patching</td><td>Bocaue Interchange</td><td>8</td><td><span class="pill warn"><span class="dot"></span>Pending</span></td><td><button class="btn ghost">View</button></td></tr>
               <tr><td>Jun 27</td><td>Vegetation Crew</td><td>Slope clearing &amp; debris removal</td><td>KM 18+200 SB</td><td>8</td><td><span class="pill bad"><span class="dot"></span>Needs Correction</span></td><td><button class="btn ghost">View</button></td></tr>
               <tr><td>Jun 27</td><td>Mechanized Sweeper</td><td>Pre/post-trip inspection &amp; sweep run</td><td>NLEX Mainline KM 9–22</td><td>2</td><td><span class="pill ok"><span class="dot"></span>Approved</span></td><td><button class="btn ghost">View</button></td></tr>
             </tbody>
@@ -1391,16 +1376,17 @@
         </div>
         <div class="panel">
           <div class="panel-head"><h3>Manpower List</h3><div class="actions"><button class="btn ghost">Export</button><button class="btn primary">+ Add Personnel</button></div></div>
-          <div class="filter-row"><select><option>All Teams</option><option>Drainage Cleaning</option><option>Bridge Epoxy</option><option>Bridge Routine</option></select></div>
+          <div class="filter-row"><select><option>All Teams</option><option>NLEX IRT</option><option>Vegetation Crew</option><option>Mechanized Sweeper</option></select></div>
           <table>
             <thead>
               <tr><th>Name</th><th>ID</th><th>Team</th><th>Role</th><th>Deployment</th><th>Status</th></tr>
             </thead>
             <tbody>
-              <tr><td><span class="avatar-sm">RS</span>R. Santos</td><td>SV-0142</td><td>Drainage Cleaning A</td><td>Team Lead</td><td>KM 12+400 NB</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
-              <tr><td><span class="avatar-sm">AC</span>A. Cruz</td><td>SV-0188</td><td>Bridge Epoxy Team 2</td><td>Supervisor</td><td>Marilao Bridge</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
-              <tr><td><span class="avatar-sm">MR</span>M. Reyes</td><td>SV-0091</td><td>Bridge Routine Team 1</td><td>Technician</td><td>—</td><td><span class="pill warn"><span class="dot"></span>On Leave</span></td></tr>
-              <tr><td><span class="avatar-sm">LG</span>L. Garcia</td><td>SV-0205</td><td>Vegetation Crew</td><td>Laborer</td><td>—</td><td><span class="pill bad"><span class="dot"></span>Unassigned</span></td></tr>
+              <tr><td><span class="avatar-sm">MD</span>M.A. De Guzman</td><td>1</td><td>NLEX IRT</td><td>Supervisor</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
+              <tr><td><span class="avatar-sm">MA</span>Marcial Agustin</td><td>2</td><td>NLEX IRT</td><td>Warehouseman</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
+              <tr><td><span class="avatar-sm">AL</span>Agapito Lapinig</td><td>3</td><td>NLEX IRT</td><td>Leadman</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
+              <tr><td><span class="avatar-sm">MG</span>Michael Geronimo</td><td>4</td><td>NLEX IRT</td><td>Operator 1</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
+              <tr><td><span class="avatar-sm">JD</span>Jervis De Jesus</td><td>5</td><td>NLEX IRT</td><td>Rigger</td><td>NLEX Corridor</td><td><span class="pill ok"><span class="dot"></span>Deployed</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1420,11 +1406,11 @@
               <tr><th>Asset</th><th>Type</th><th>Assigned Team</th><th>Last Inspection</th><th>Status</th></tr>
             </thead>
             <tbody>
-              <tr><td>Mechanized Sweeper 01</td><td>Vehicle</td><td>Sweeper Crew</td><td>Jun 28, 6:40 AM</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
-              <tr><td>Epoxy Injection Pump 03</td><td>Tool</td><td>Bridge Epoxy Team 2</td><td>Jun 27</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
-              <tr><td>Vactor Truck 02</td><td>Vehicle</td><td>Drainage Cleaning A</td><td>Jun 24</td><td><span class="pill warn"><span class="dot"></span>Under Maintenance</span></td></tr>
+              <tr><td>Mechanized Sweeper 01</td><td>Vehicle</td><td>Mechanized Sweeper</td><td>Jun 28, 6:40 AM</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
+              <tr><td>Crane Truck 01</td><td>Vehicle</td><td>NLEX IRT</td><td>Jun 28</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
+              <tr><td>Welding Machine Set</td><td>Tool</td><td>NLEX IRT</td><td>Jun 27</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
               <tr><td>Brush Cutter Set (x6)</td><td>Tool</td><td>Vegetation Crew</td><td>Jun 26</td><td><span class="pill ok"><span class="dot"></span>Operational</span></td></tr>
-              <tr><td>Generator Unit 05</td><td>Equipment</td><td>Bridge Routine Team 1</td><td>Jun 20</td><td><span class="pill bad"><span class="dot"></span>Down</span></td></tr>
+              <tr><td>Generator Unit 05</td><td>Equipment</td><td>NLEX IRT</td><td>Jun 20</td><td><span class="pill bad"><span class="dot"></span>Down</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1445,9 +1431,8 @@
               <tr><th>Line Item</th><th>Category</th><th>Period</th><th>Amount</th><th>Status</th></tr>
             </thead>
             <tbody>
-              <tr><td>Manpower Deployment — Drainage</td><td>Labor</td><td>Jun 1–28</td><td>&#8369;1,120,000</td><td><span class="pill ok"><span class="dot"></span>Billed</span></td></tr>
-              <tr><td>Bridge Epoxy Works</td><td>Materials + Labor</td><td>Jun 1–28</td><td>&#8369;840,500</td><td><span class="pill ok"><span class="dot"></span>Billed</span></td></tr>
-              <tr><td>Equipment Rental — Vactor Truck</td><td>Equipment</td><td>Jun 1–28</td><td>&#8369;265,000</td><td><span class="pill warn"><span class="dot"></span>Pending Approval</span></td></tr>
+              <tr><td>NLEX IRT Manpower Deployment</td><td>Labor</td><td>Jun 1–28</td><td>&#8369;1,960,500</td><td><span class="pill ok"><span class="dot"></span>Billed</span></td></tr>
+              <tr><td>Equipment Rental — Crane &amp; Welding</td><td>Equipment</td><td>Jun 1–28</td><td>&#8369;265,000</td><td><span class="pill warn"><span class="dot"></span>Pending Approval</span></td></tr>
               <tr><td>Vegetation Maintenance</td><td>Labor</td><td>Jun 1–28</td><td>&#8369;412,300</td><td><span class="pill warn"><span class="dot"></span>Pending Approval</span></td></tr>
               <tr><td>Mechanized Sweeping</td><td>Equipment + Labor</td><td>Jun 1–28</td><td>&#8369;204,800</td><td><span class="pill ok"><span class="dot"></span>Billed</span></td></tr>
             </tbody>
