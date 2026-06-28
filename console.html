@@ -1437,13 +1437,17 @@
       </button>
     </nav>
 
-    <a href="index.html" style="display:flex;align-items:center;gap:8px;padding:12px 22px;color:rgba(255,255,255,0.55);font-size:13px;font-weight:500;transition:color 0.2s;" onmouseover="this.style.color='#ff6a1a'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">
+    <a href="index.html" style="display:flex;align-items:center;gap:8px;padding:8px 22px;color:rgba(255,255,255,0.55);font-size:13px;font-weight:500;transition:color 0.2s;" onmouseover="this.style.color='#ff6a1a'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
       Back to Website
     </a>
+    <button onclick="doSignOut()" style="display:flex;align-items:center;gap:8px;padding:8px 22px;color:rgba(255,255,255,0.55);font-size:13px;font-weight:500;transition:color 0.2s;border:none;background:none;cursor:pointer;font-family:inherit;width:100%;text-align:left;" onmouseover="this.style.color='#ff3b30'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign Out
+    </button>
     <div class="sidebar-foot">
       <span class="sync-dot"></span>NLEX IRT Contract<br>
-      <span style="margin-left: 12px;">Ready</span>
+      <span style="margin-left: 12px;">Connected</span>
     </div>
   </aside>
 
@@ -1981,14 +1985,51 @@
 
       <!-- ============ ADMIN ============ -->
       <div class="view" id="view-admin">
-        <div class="panel">
-          <div class="panel-head"><h3>Users & Access</h3><div class="actions"><button class="btn primary">+ Invite User</button></div></div>
+        <!-- Pending Approvals -->
+        <div class="panel" id="admin-pending-panel">
+          <div class="panel-head">
+            <h3>Pending Approvals</h3>
+            <div class="actions">
+              <button class="btn ghost" onclick="loadAdminUsers()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                Refresh
+              </button>
+            </div>
+          </div>
           <table>
             <thead>
-              <tr><th>User</th><th>Role</th><th>Access</th><th>Last Active</th><th></th></tr>
+              <tr><th>Name</th><th>Email</th><th>Team</th><th>Position</th><th>Registered</th><th style="text-align:center;">Actions</th></tr>
             </thead>
-            <tbody>
-              <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No users configured yet. Click <strong>+ Invite User</strong> to add team members.</td></tr>
+            <tbody id="admin-pending-body">
+              <tr><td colspan="6" class="empty-cell">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Active Users -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Active Users</h3>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Team</th><th>Position</th><th>Role</th><th>Last Active</th></tr>
+            </thead>
+            <tbody id="admin-active-body">
+              <tr><td colspan="6" class="empty-cell">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Rejected Users -->
+        <div class="panel">
+          <div class="panel-head"><h3>Rejected</h3></div>
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Registered</th><th style="text-align:center;">Actions</th></tr>
+            </thead>
+            <tbody id="admin-rejected-body">
+              <tr><td colspan="4" class="empty-cell">No rejected users.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1998,7 +2039,148 @@
   </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
 <script>
+  // ============================================================
+  // AUTH GUARD — must run before anything else
+  // ============================================================
+  var currentUser = null;
+  var currentProfile = null;
+
+  // Hide app until auth resolves
+  document.querySelector('.app').style.display = 'none';
+
+  sb.auth.getSession().then(function(res) {
+    if (!res.data.session) {
+      window.location.href = 'login.html';
+      return;
+    }
+    currentUser = res.data.session.user;
+    return sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  }).then(function(res) {
+    if (!res || res.error || !res.data || res.data.status !== 'approved') {
+      sb.auth.signOut();
+      window.location.href = 'login.html';
+      return;
+    }
+    currentProfile = res.data;
+    initApp();
+  });
+
+  function initApp() {
+    // Show the app
+    document.querySelector('.app').style.display = 'flex';
+
+    // Set user info in topbar
+    var initials = currentProfile.display_name.split(' ').map(function(w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
+    document.querySelector('.avatar').innerHTML = initials;
+
+    // Set role from profile
+    var roleSelect = document.getElementById('roleSelect');
+    if (currentProfile.system_role === 'admin') {
+      roleSelect.value = 'admin';
+      roleSelect.parentElement.style.display = 'flex';
+    } else {
+      roleSelect.parentElement.innerHTML = '<span style="font-size:11px;letter-spacing:0.04em;text-transform:uppercase;">Role:</span> <span style="font-size:12.5px;font-weight:600;text-transform:uppercase;color:#fff;">' + currentProfile.system_role + '</span>';
+    }
+
+    setRole(currentProfile.system_role);
+    goTo('dashboard');
+
+    // Load data from Supabase
+    loadReportsFromSupabase();
+  }
+
+  // Sign out
+  function doSignOut() {
+    sb.auth.signOut().then(function() {
+      window.location.href = 'login.html';
+    });
+  }
+
+  // ============================================================
+  // SUPABASE DATA SYNC
+  // ============================================================
+  function loadReportsFromSupabase() {
+    sb.from('reports').select('*').order('submitted_at', { ascending: false })
+      .then(function(res) {
+        if (res.data) {
+          irtReports = res.data.map(function(r) {
+            return {
+              id: r.id, date: r.date, expressway: r.expressway, shift: r.shift,
+              weather: r.weather, team: r.team, leadman: r.leadman, control: r.control_no,
+              direction: r.direction, kmpost: r.km_post, locNotice: r.loc_notice,
+              lanes: r.lanes, trafficFlow: r.traffic_flow, vehicle: r.vehicle,
+              category: r.category, plate: r.plate, mainActivity: r.main_activity,
+              subActivity: r.sub_activity, trafficMgmt: r.traffic_mgmt, action: r.action_taken,
+              remarks: r.remarks, timeNotif: r.time_notif, odoNotif: r.odo_notif,
+              timeArrival: r.time_arrival, odoArrival: r.odo_arrival,
+              timeCleared: r.time_cleared, timeSiteCleared: r.time_site_cleared,
+              timeDeparture: r.time_departure, responseTime: r.response_time,
+              clearingTime: r.clearing_time, recoveryTime: r.recovery_time,
+              distance: r.distance, submittedBy: r.submitted_by,
+              submittedByName: r.submitted_by_name, submittedAt: r.submitted_at
+            };
+          });
+          refreshDashboard();
+        }
+      });
+  }
+
+  function saveReportToSupabase(report, callback) {
+    var row = {
+      date: report.date, expressway: report.expressway, shift: report.shift,
+      weather: report.weather, team: report.team, leadman: report.leadman,
+      control_no: report.control, direction: report.direction, km_post: report.kmpost,
+      loc_notice: report.locNotice, lanes: report.lanes, traffic_flow: report.trafficFlow,
+      vehicle: report.vehicle, category: report.category, plate: report.plate,
+      main_activity: report.mainActivity, sub_activity: report.subActivity,
+      traffic_mgmt: report.trafficMgmt, action_taken: report.action,
+      remarks: report.remarks, time_notif: report.timeNotif, odo_notif: report.odoNotif,
+      time_arrival: report.timeArrival, odo_arrival: report.odoArrival,
+      time_cleared: report.timeCleared, time_site_cleared: report.timeSiteCleared,
+      time_departure: report.timeDeparture, response_time: report.responseTime,
+      clearing_time: report.clearingTime, recovery_time: report.recoveryTime,
+      distance: report.distance, submitted_by: currentUser.id,
+      submitted_by_name: currentProfile.display_name
+    };
+
+    sb.from('reports').insert(row).select().then(function(res) {
+      if (res.error) {
+        showToast('Error saving: ' + res.error.message, 'error');
+      } else {
+        if (callback) callback(res.data[0]);
+        loadReportsFromSupabase();
+      }
+    });
+  }
+
+  function saveAttendanceToSupabase(dateVal, records) {
+    sb.from('attendance').upsert({
+      date: dateVal,
+      saved_by: currentUser.id,
+      saved_at: new Date().toISOString(),
+      records: records
+    }).then(function(res) {
+      if (res.error) {
+        showToast('Error saving attendance: ' + res.error.message, 'error');
+      } else {
+        showToast('Attendance saved for ' + dateVal + '.', 'success');
+      }
+    });
+  }
+
+  function loadAttendanceFromSupabase(dateVal, callback) {
+    sb.from('attendance').select('*').eq('date', dateVal).single().then(function(res) {
+      if (res.data) {
+        callback(res.data.records);
+      } else {
+        callback(null);
+      }
+    });
+  }
+
   const titles = {
     dashboard: ["Dashboard", "Overview / All teams / Today"],
     activity: ["Daily Activity", "Field Operations / Activity Log"],
@@ -2022,6 +2204,9 @@
 
     if (view === 'attendance' && attendanceData.length > 0) {
       activateWorkspace();
+    }
+    if (view === 'admin') {
+      loadAdminUsers();
     }
   }
 
@@ -2060,7 +2245,7 @@
   // ============================================================
   // INCIDENT REPORT SYSTEM
   // ============================================================
-  var irtReports = JSON.parse(localStorage.getItem('savvice_irt_reports') || '[]');
+  var irtReports = [];
 
   // Set default date
   var today = new Date().toISOString().split('T')[0];
@@ -2202,10 +2387,9 @@
 
     report.trafficFlow = report.trafficFlow.val || '';
 
-    irtReports.push(report);
-    try { localStorage.setItem('savvice_irt_reports', JSON.stringify(irtReports)); } catch(e) {}
-
-    showToast('Incident report #' + irtReports.length + ' submitted successfully!', 'success');
+    saveReportToSupabase(report, function() {
+      showToast('Incident report submitted and synced!', 'success');
+    });
     document.getElementById('irt-form').reset();
     document.getElementById('irt-date').value = today;
     document.getElementById('irt-expressway').value = 'NLEX';
@@ -2468,6 +2652,123 @@
       '</tr>';
     });
     mpBody.innerHTML = mpHtml;
+  }
+
+  // ============================================================
+  // ADMIN — USER MANAGEMENT
+  // ============================================================
+  function loadAdminUsers() {
+    if (!currentProfile || currentProfile.system_role !== 'admin') return;
+
+    sb.from('profiles').select('*').order('registered_at', { ascending: false })
+      .then(function(res) {
+        if (res.error) { showToast('Error loading users: ' + res.error.message, 'error'); return; }
+        var users = res.data || [];
+
+        var pending = users.filter(function(u) { return u.status === 'pending'; });
+        var approved = users.filter(function(u) { return u.status === 'approved'; });
+        var rejected = users.filter(function(u) { return u.status === 'rejected'; });
+
+        // Pending
+        var pBody = document.getElementById('admin-pending-body');
+        if (pending.length === 0) {
+          pBody.innerHTML = '<tr><td colspan="6" class="empty-cell">No pending registrations.</td></tr>';
+        } else {
+          pBody.innerHTML = pending.map(function(u) {
+            var initials = u.display_name.split(' ').map(function(w) { return w[0]; }).join('').substring(0,2).toUpperCase();
+            var regDate = u.registered_at ? new Date(u.registered_at).toLocaleDateString() : '—';
+            return '<tr>' +
+              '<td><span class="avatar-sm">' + initials + '</span>' + u.display_name + '</td>' +
+              '<td>' + u.email + '</td>' +
+              '<td>' + (u.team || '—') + '</td>' +
+              '<td>' + (u.position || '—') + '</td>' +
+              '<td>' + regDate + '</td>' +
+              '<td style="text-align:center;">' +
+                '<button class="btn primary" style="padding:6px 14px;font-size:12px;" onclick="approveUser(\'' + u.id + '\')">Approve</button> ' +
+                '<button class="btn ghost" style="padding:6px 14px;font-size:12px;color:var(--red);" onclick="rejectUser(\'' + u.id + '\')">Reject</button>' +
+              '</td></tr>';
+          }).join('');
+        }
+
+        // Active
+        var aBody = document.getElementById('admin-active-body');
+        if (approved.length === 0) {
+          aBody.innerHTML = '<tr><td colspan="6" class="empty-cell">No active users yet.</td></tr>';
+        } else {
+          aBody.innerHTML = approved.map(function(u) {
+            var initials = u.display_name.split(' ').map(function(w) { return w[0]; }).join('').substring(0,2).toUpperCase();
+            var lastActive = u.last_login ? new Date(u.last_login).toLocaleString() : 'Never';
+            var roleSelect = '<select onchange="changeUserRole(\'' + u.id + '\', this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--border);border-radius:4px;font-family:inherit;">' +
+              '<option value="admin"' + (u.system_role === 'admin' ? ' selected' : '') + '>Admin</option>' +
+              '<option value="supervisor"' + (u.system_role === 'supervisor' ? ' selected' : '') + '>Supervisor</option>' +
+              '<option value="client"' + (u.system_role === 'client' ? ' selected' : '') + '>Client</option></select>';
+            return '<tr>' +
+              '<td><span class="avatar-sm">' + initials + '</span>' + u.display_name + '</td>' +
+              '<td>' + u.email + '</td>' +
+              '<td>' + (u.team || '—') + '</td>' +
+              '<td>' + (u.position || '—') + '</td>' +
+              '<td>' + roleSelect + '</td>' +
+              '<td>' + lastActive + '</td></tr>';
+          }).join('');
+        }
+
+        // Rejected
+        var rBody = document.getElementById('admin-rejected-body');
+        if (rejected.length === 0) {
+          rBody.innerHTML = '<tr><td colspan="4" class="empty-cell">No rejected users.</td></tr>';
+        } else {
+          rBody.innerHTML = rejected.map(function(u) {
+            var regDate = u.registered_at ? new Date(u.registered_at).toLocaleDateString() : '—';
+            return '<tr><td>' + u.display_name + '</td><td>' + u.email + '</td><td>' + regDate + '</td>' +
+              '<td style="text-align:center;"><button class="btn ghost" style="padding:6px 14px;font-size:12px;" onclick="approveUser(\'' + u.id + '\')">Re-approve</button></td></tr>';
+          }).join('');
+        }
+
+        // Update pending count in nav
+        var badge = document.querySelector('.admin-badge');
+        if (pending.length > 0) {
+          if (!badge) {
+            var navAdmin = document.querySelector('.nav-item[data-view="admin"]');
+            var b = document.createElement('span');
+            b.className = 'admin-badge';
+            b.style.cssText = 'background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;margin-left:auto;';
+            b.textContent = pending.length;
+            navAdmin.appendChild(b);
+          } else {
+            badge.textContent = pending.length;
+          }
+        } else if (badge) {
+          badge.remove();
+        }
+      });
+  }
+
+  function approveUser(userId) {
+    sb.from('profiles').update({
+      status: 'approved',
+      approved_by: currentUser.id,
+      approved_at: new Date().toISOString()
+    }).eq('id', userId).then(function(res) {
+      if (res.error) { showToast('Error: ' + res.error.message, 'error'); return; }
+      showToast('User approved!', 'success');
+      loadAdminUsers();
+    });
+  }
+
+  function rejectUser(userId) {
+    if (!confirm('Reject this user? They will not be able to access the console.')) return;
+    sb.from('profiles').update({ status: 'rejected' }).eq('id', userId).then(function(res) {
+      if (res.error) { showToast('Error: ' + res.error.message, 'error'); return; }
+      showToast('User rejected.', 'success');
+      loadAdminUsers();
+    });
+  }
+
+  function changeUserRole(userId, newRole) {
+    sb.from('profiles').update({ system_role: newRole }).eq('id', userId).then(function(res) {
+      if (res.error) { showToast('Error: ' + res.error.message, 'error'); return; }
+      showToast('Role updated to ' + newRole + '.', 'success');
+    });
   }
 
   // Refresh dashboard with real data
@@ -2854,12 +3155,7 @@
     var saveData = attendanceData.map(function(e) {
       return { name: e.name, team: e.team, role: e.role, id: e.id, status: e.status };
     });
-    try {
-      localStorage.setItem(key, JSON.stringify(saveData));
-      showToast('Attendance saved for ' + dateVal + '.', 'success');
-    } catch(e) {
-      showToast('Saved in session (localStorage unavailable).', 'success');
-    }
+    saveAttendanceToSupabase(dateVal, saveData);
   }
 
   // Export CSV
