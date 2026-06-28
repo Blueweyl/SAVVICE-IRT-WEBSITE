@@ -759,6 +759,345 @@
     font-weight: 500;
   }
 
+  /* ========= ACTIVITY TABS ========= */
+  .act-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+  }
+
+  .act-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+  }
+
+  .act-tab:hover { color: var(--text-primary); background: var(--bg); }
+  .act-tab.active { background: var(--accent); color: #fff; }
+
+  /* ========= FORM SECTIONS ========= */
+  .form-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .form-section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .form-section-head h3 {
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  .form-section-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .form-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .req { color: var(--red); }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-xs);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--surface);
+    outline: none;
+    transition: all var(--transition);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255,106,26,0.08);
+  }
+
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  /* Direction / Traffic Flow toggle buttons */
+  .toggle-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .toggle-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+  }
+
+  .toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .toggle-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* Auto-calculated fields */
+  .auto-calc {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    background: var(--bg);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+  }
+
+  .auto-calc.has-value { color: var(--accent); }
+
+  .calc-hint {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+    display: block;
+    letter-spacing: 0.02em;
+  }
+
+  /* Photo upload grid */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+
+  .photo-upload {
+    cursor: pointer;
+  }
+
+  .photo-upload input { display: none; }
+
+  .photo-placeholder {
+    aspect-ratio: 1;
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all var(--transition);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .photo-placeholder span {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .photo-placeholder:hover {
+    border-color: var(--accent);
+    background: rgba(255,106,26,0.04);
+  }
+
+  .photo-placeholder img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+
+  .photo-placeholder.has-photo { border-style: solid; border-color: var(--accent); }
+  .photo-placeholder.has-photo span,
+  .photo-placeholder.has-photo svg { display: none; }
+
+  /* Submit button */
+  .btn-submit-irt {
+    width: 100%;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #1a1a5e 0%, #0d0d3a 100%);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: inherit;
+  }
+
+  .btn-submit-irt:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  /* Log detail modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 32px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes modalIn { from { opacity:0; transform:scale(0.95) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+
+  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+  .modal-close {
+    float: right;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all var(--transition);
+  }
+  .modal-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .detail-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .detail-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); font-weight: 600; margin-bottom: 2px; }
+  .detail-value { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+
+  /* Summary cards */
+  .summary-date-group {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .summary-date-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .summary-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .summary-stat {
+    background: var(--surface);
+    padding: 16px;
+    text-align: center;
+  }
+
+  .summary-stat .n {
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .summary-stat .l {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 4px;
+  }
+
+  .empty-cell { text-align: center; padding: 32px !important; color: var(--text-tertiary); font-size: 13px; }
+
+  @media (max-width: 768px) {
+    .form-grid-2, .form-grid-3, .form-grid-4 { grid-template-columns: 1fr; }
+    .photo-grid { grid-template-columns: repeat(3, 1fr); }
+    .detail-grid { grid-template-columns: 1fr; }
+    .summary-stats { grid-template-columns: repeat(2, 1fr); }
+    .act-tabs { flex-wrap: wrap; }
+  }
+
   /* ========= EMPTY STATE ========= */
   .empty-state {
     display: flex;
@@ -1199,7 +1538,7 @@
               <tr><th>Team</th><th>Task</th><th>Location</th><th>Supervisor</th><th>Status</th></tr>
             </thead>
             <tbody>
-              <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No activity submissions yet. Click <strong>+ New Entry</strong> in Daily Activity to get started.</td></tr>
+              <tr id="dash-activity-empty"><td colspan="5" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No activity submissions yet. Click <strong>+ New Entry</strong> in Daily Activity to get started.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1207,24 +1546,242 @@
 
       <!-- ============ ACTIVITY ============ -->
       <div class="view" id="view-activity">
-        <div class="panel">
-          <div class="panel-head">
-            <h3>Daily Activity Log</h3>
-            <div class="actions"><button class="btn ghost">Export</button><button class="btn primary">+ New Entry</button></div>
+        <!-- Tab bar -->
+        <div class="act-tabs">
+          <button class="act-tab active" onclick="switchActTab('form')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            New Report
+          </button>
+          <button class="act-tab" onclick="switchActTab('log')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Activity Log
+          </button>
+          <button class="act-tab" onclick="switchActTab('summary')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Summary
+          </button>
+        </div>
+
+        <!-- ===== TAB: NEW REPORT FORM ===== -->
+        <div class="act-panel" id="act-form">
+          <form id="irt-form" onsubmit="event.preventDefault(); submitIRT();">
+
+            <!-- Section 1 — General Information -->
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#007aff;">📋</span>
+                <h3>1 — General Information</h3>
+              </div>
+              <div class="form-grid-3">
+                <div class="form-group"><label>Date Today <span class="req">*</span></label><input type="date" id="irt-date" required></div>
+                <div class="form-group"><label>Expressway</label><input type="text" id="irt-expressway" value="NLEX" readonly style="background:var(--bg);"></div>
+                <div class="form-group"><label>Shift <span class="req">*</span></label>
+                  <select id="irt-shift" required><option value="">— Select —</option><option>Day</option><option>Night</option></select>
+                </div>
+              </div>
+              <div class="form-grid-3">
+                <div class="form-group"><label>Weather</label>
+                  <select id="irt-weather"><option value="">— Select —</option><option>Clear</option><option>Cloudy</option><option>Rainy</option><option>Heavy Rain</option><option>Foggy</option></select>
+                </div>
+                <div class="form-group"><label>Team <span class="req">*</span></label>
+                  <select id="irt-team" required><option value="">— Select —</option><option>Team 1</option><option>Team 2</option><option>Team 3</option><option>Team 4</option><option>Team 5</option><option>Team 6</option><option>Team 7</option></select>
+                </div>
+                <div class="form-group"><label>Control / Event No.</label><input type="text" id="irt-control" placeholder="e.g. 3-5"></div>
+              </div>
+              <div class="form-grid-2">
+                <div class="form-group"><label>Leadman / Operator Name <span class="req">*</span></label>
+                  <select id="irt-leadman" required><option value="">— Select —</option></select>
+                </div>
+                <div class="form-group"></div>
+              </div>
+            </div>
+
+            <!-- Section 2 — Incident Location -->
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#ff9f0a;">📍</span>
+                <h3>2 — Incident Location</h3>
+              </div>
+              <div class="form-group"><label>Direction <span class="req">*</span></label>
+                <div class="toggle-group" id="irt-direction">
+                  <button type="button" class="toggle-btn" data-val="Northbound" onclick="toggleDir(this)">Northbound</button>
+                  <button type="button" class="toggle-btn" data-val="Southbound" onclick="toggleDir(this)">Southbound</button>
+                  <button type="button" class="toggle-btn" data-val="Eastbound" onclick="toggleDir(this)">Eastbound</button>
+                  <button type="button" class="toggle-btn" data-val="Westbound" onclick="toggleDir(this)">Westbound</button>
+                  <button type="button" class="toggle-btn" data-val="Out Bound" onclick="toggleDir(this)">Out Bound</button>
+                </div>
+              </div>
+              <div class="form-group"><label>Location / Kilometer Post <span class="req">*</span></label><input type="text" id="irt-kmpost" placeholder="e.g. Km 59+900 to Km 62+200 NB lane 1" required></div>
+              <div class="form-group"><label>Location Upon Notice</label><input type="text" id="irt-loc-notice" placeholder="Where was the team when notified?"></div>
+              <div class="form-grid-2">
+                <div class="form-group"><label>Affected Lanes</label>
+                  <select id="irt-lanes"><option value="">— Select —</option><option>Lane 1</option><option>Lane 2</option><option>Lane 3</option><option>Lane 4</option><option>All Lanes</option><option>Shoulder</option><option>Median</option></select>
+                </div>
+                <div class="form-group"><label>Ongoing Traffic Flow</label>
+                  <div class="toggle-group" id="irt-traffic-flow">
+                    <button type="button" class="toggle-btn" data-val="Normal" onclick="toggleFlow(this)">🟢 Normal</button>
+                    <button type="button" class="toggle-btn" data-val="Slow Moving" onclick="toggleFlow(this)">🟡 Slow Moving</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3 — Incident Details -->
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#ff3b30;">⚠️</span>
+                <h3>3 — Incident Details</h3>
+              </div>
+              <div class="form-grid-2">
+                <div class="form-group"><label>Vehicle / Equipment</label>
+                  <select id="irt-vehicle"><option value="">— Select —</option><option>Patrol Vehicle</option><option>Tow Truck</option><option>Crane Truck</option><option>Service Vehicle</option><option>Motorcycle</option><option>Other</option></select>
+                </div>
+                <div class="form-group"><label>Traffic Incident Category <span class="req">*</span></label>
+                  <select id="irt-category" required><option value="">— Select —</option><option>Stalled Vehicle</option><option>Vehicular Accident</option><option>Road Obstruction</option><option>Road Hazard</option><option>Illegal Parking</option><option>Fire Incident</option><option>Flooding</option><option>Structural Damage</option><option>Medical Emergency</option><option>Others</option></select>
+                </div>
+              </div>
+              <div class="form-grid-2">
+                <div class="form-group"><label>Vehicle Involved / Plate No.</label><input type="text" id="irt-plate" placeholder="e.g. TDS 938, AAB-4565"></div>
+                <div class="form-group"><label>Main Activity</label>
+                  <select id="irt-main-activity"><option value="">— Select —</option><option>Traffic Management</option><option>Incident Response</option><option>Towing</option><option>Road Clearing</option><option>First Aid</option><option>Monitoring</option><option>Patrol</option><option>Others</option></select>
+                </div>
+              </div>
+              <div class="form-group"><label>Sub Activity</label>
+                <select id="irt-sub-activity"><option value="">— Select —</option><option>Cone Placement</option><option>Early Warning Device</option><option>Push Out</option><option>Debris Removal</option><option>Traffic Rerouting</option><option>Barricade Setup</option><option>Others</option></select>
+              </div>
+              <div class="form-grid-2">
+                <div class="form-group"><label>Traffic Mgmt Implemented</label>
+                  <select id="irt-traffic-mgmt"><option value="">— Select —</option><option>Counterflow</option><option>Lane Closure</option><option>Speed Reduction</option><option>Full Closure</option><option>None</option></select>
+                </div>
+                <div class="form-group"><label>Action Taken</label>
+                  <select id="irt-action"><option value="">— Select —</option><option>Towed to Shoulder</option><option>Towed to Exit</option><option>Assisted Motorist</option><option>Cleared Debris</option><option>Coordinated with PNP</option><option>Coordinated with LGU</option><option>Referred to TMC</option><option>Others</option></select>
+                </div>
+              </div>
+              <div class="form-group"><label>Remarks</label><textarea id="irt-remarks" rows="3" placeholder="Additional notes, TCR calls, special instructions..."></textarea></div>
+            </div>
+
+            <!-- Section 4 — Times & Odometer -->
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#34c759;">⏱️</span>
+                <h3>4 — Times & Odometer</h3>
+              </div>
+              <div class="form-grid-4">
+                <div class="form-group"><label>Time of Notification</label><input type="time" id="irt-time-notif" onchange="calcTimes()"></div>
+                <div class="form-group"><label>Odometer (Notification)</label><input type="number" id="irt-odo-notif" placeholder="km reading" step="0.1" onchange="calcTimes()"></div>
+                <div class="form-group"><label>Time of Arrival</label><input type="time" id="irt-time-arrival" onchange="calcTimes()"></div>
+                <div class="form-group"><label>Odometer (Arrival)</label><input type="number" id="irt-odo-arrival" placeholder="km reading" step="0.1" onchange="calcTimes()"></div>
+              </div>
+              <div class="form-grid-3">
+                <div class="form-group"><label>Time Cleared (Lane)</label><input type="time" id="irt-time-cleared" onchange="calcTimes()"></div>
+                <div class="form-group"><label>Time Site Cleared</label><input type="time" id="irt-time-site-cleared" onchange="calcTimes()"></div>
+                <div class="form-group"><label>Time of Departure</label><input type="time" id="irt-time-departure" onchange="calcTimes()"></div>
+              </div>
+              <div class="form-grid-4">
+                <div class="form-group">
+                  <label>Response Time</label>
+                  <div class="auto-calc" id="irt-calc-response">auto-calculated</div>
+                  <span class="calc-hint">Arrival − Notification</span>
+                </div>
+                <div class="form-group">
+                  <label>Clearing Time</label>
+                  <div class="auto-calc" id="irt-calc-clearing">auto-calculated</div>
+                  <span class="calc-hint">Site Cleared − Arrival</span>
+                </div>
+                <div class="form-group">
+                  <label>Recovery Time</label>
+                  <div class="auto-calc" id="irt-calc-recovery">auto-calculated</div>
+                  <span class="calc-hint">Departure − Arrival</span>
+                </div>
+                <div class="form-group">
+                  <label>Distance Traveled</label>
+                  <div class="auto-calc" id="irt-calc-distance">auto-calculated</div>
+                  <span class="calc-hint">Odom Arrival − Notification</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 5 — Photo Documentation -->
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#af52de;">📷</span>
+                <h3>5 — Photo Documentation (Up to 5 Photos)</h3>
+              </div>
+              <div class="photo-grid">
+                <label class="photo-upload"><input type="file" accept="image/*" onchange="previewPhoto(this,0)"><div class="photo-placeholder" id="photo-prev-0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo 1</span></div></label>
+                <label class="photo-upload"><input type="file" accept="image/*" onchange="previewPhoto(this,1)"><div class="photo-placeholder" id="photo-prev-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo 2</span></div></label>
+                <label class="photo-upload"><input type="file" accept="image/*" onchange="previewPhoto(this,2)"><div class="photo-placeholder" id="photo-prev-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo 3</span></div></label>
+                <label class="photo-upload"><input type="file" accept="image/*" onchange="previewPhoto(this,3)"><div class="photo-placeholder" id="photo-prev-3"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo 4</span></div></label>
+                <label class="photo-upload"><input type="file" accept="image/*" onchange="previewPhoto(this,4)"><div class="photo-placeholder" id="photo-prev-4"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo 5</span></div></label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit-irt">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+              Submit Incident Report
+            </button>
+          </form>
+        </div>
+
+        <!-- ===== TAB: ACTIVITY LOG ===== -->
+        <div class="act-panel" id="act-log" style="display:none;">
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Activity Log</h3>
+              <div class="actions">
+                <button class="btn ghost" onclick="exportLogsCSV()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export Excel
+                </button>
+                <button class="btn ghost" onclick="exportLogsPDF()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Export PDF
+                </button>
+              </div>
+            </div>
+            <div class="filter-row">
+              <input type="date" id="log-filter-date" onchange="renderLog()">
+              <select id="log-filter-team" onchange="renderLog()"><option value="">All Teams</option><option>Team 1</option><option>Team 2</option><option>Team 3</option><option>Team 4</option><option>Team 5</option><option>Team 6</option><option>Team 7</option></select>
+              <select id="log-filter-category" onchange="renderLog()"><option value="">All Categories</option><option>Stalled Vehicle</option><option>Vehicular Accident</option><option>Road Obstruction</option><option>Road Hazard</option><option>Others</option></select>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Date</th><th>Shift</th><th>Team</th><th>Leadman</th><th>Category</th><th>Location</th><th>Direction</th><th>Response</th><th></th></tr>
+                </thead>
+                <tbody id="log-table-body">
+                  <tr><td colspan="10" class="empty-cell">No incident reports submitted yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="att-table-footer"><span id="log-count">0 reports</span></div>
           </div>
-          <div class="filter-row">
-            <select><option>All Teams</option><option>NLEX IRT</option></select>
-            <select><option>All Status</option><option>Approved</option><option>Pending</option><option>Needs Correction</option></select>
-            <input type="date" value="2026-06-28">
+        </div>
+
+        <!-- ===== TAB: SUMMARY ===== -->
+        <div class="act-panel" id="act-summary" style="display:none;">
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Activity Summary by Date</h3>
+              <div class="actions">
+                <button class="btn ghost" onclick="exportSummaryCSV()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export Excel
+                </button>
+                <button class="btn ghost" onclick="exportSummaryPDF()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Export PDF
+                </button>
+              </div>
+            </div>
+            <div class="filter-row">
+              <label style="font-size:13px;font-weight:500;color:var(--text-secondary);display:flex;align-items:center;gap:6px;">From <input type="date" id="sum-from" onchange="renderSummary()"></label>
+              <label style="font-size:13px;font-weight:500;color:var(--text-secondary);display:flex;align-items:center;gap:6px;">To <input type="date" id="sum-to" onchange="renderSummary()"></label>
+            </div>
+            <div id="summary-content">
+              <div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><p>No data to summarize yet. Submit incident reports to see the summary.</p></div>
+            </div>
           </div>
-          <table>
-            <thead>
-              <tr><th>Date</th><th>Team</th><th>Task / Corrective Action</th><th>Location</th><th>Manpower</th><th>Status</th><th></th></tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No activity entries yet. Click <strong>+ New Entry</strong> to log daily activity.</td></tr>
-            </tbody>
-          </table>
         </div>
       </div>
 
@@ -1500,6 +2057,396 @@
     document.getElementById('sidebarOverlay').classList.remove('active');
   }
 
+  // ============================================================
+  // INCIDENT REPORT SYSTEM
+  // ============================================================
+  var irtReports = JSON.parse(localStorage.getItem('savvice_irt_reports') || '[]');
+
+  // Set default date
+  var today = new Date().toISOString().split('T')[0];
+  var dateField = document.getElementById('irt-date');
+  if (dateField) dateField.value = today;
+
+  // Populate leadman dropdown from manpower
+  var leadmanSelect = document.getElementById('irt-leadman');
+  if (leadmanSelect) {
+    nlex_irt_manpower.forEach(function(emp) {
+      if (emp.role === 'Leadman' || emp.role === 'Supervisor') {
+        var opt = document.createElement('option');
+        opt.value = emp.name;
+        opt.textContent = emp.name + ' (' + emp.role + ')';
+        leadmanSelect.appendChild(opt);
+      }
+    });
+  }
+
+  // Tab switching
+  function switchActTab(tab) {
+    document.querySelectorAll('.act-tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.act-panel').forEach(function(p) { p.style.display = 'none'; });
+    document.getElementById('act-' + tab).style.display = 'block';
+    event.target.closest('.act-tab').classList.add('active');
+    if (tab === 'log') renderLog();
+    if (tab === 'summary') renderSummary();
+  }
+
+  // Direction toggle
+  function toggleDir(btn) {
+    document.querySelectorAll('#irt-direction .toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+  }
+
+  function toggleFlow(btn) {
+    document.querySelectorAll('#irt-traffic-flow .toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+  }
+
+  // Time calculations
+  function calcTimes() {
+    var tNotif = document.getElementById('irt-time-notif').value;
+    var tArrival = document.getElementById('irt-time-arrival').value;
+    var tCleared = document.getElementById('irt-time-site-cleared').value;
+    var tDepart = document.getElementById('irt-time-departure').value;
+    var odoNotif = parseFloat(document.getElementById('irt-odo-notif').value) || 0;
+    var odoArrival = parseFloat(document.getElementById('irt-odo-arrival').value) || 0;
+
+    function diffMin(a, b) {
+      if (!a || !b) return null;
+      var pa = a.split(':'), pb = b.split(':');
+      return (parseInt(pb[0]) * 60 + parseInt(pb[1])) - (parseInt(pa[0]) * 60 + parseInt(pa[1]));
+    }
+
+    function fmtMin(m) {
+      if (m === null || isNaN(m)) return 'auto-calculated';
+      var h = Math.floor(Math.abs(m) / 60);
+      var mm = Math.abs(m) % 60;
+      return (h > 0 ? h + 'h ' : '') + mm + 'min';
+    }
+
+    var response = diffMin(tNotif, tArrival);
+    var clearing = diffMin(tArrival, tCleared);
+    var recovery = diffMin(tArrival, tDepart);
+    var dist = (odoArrival && odoNotif) ? (odoArrival - odoNotif).toFixed(1) + ' km' : 'auto-calculated';
+
+    var elR = document.getElementById('irt-calc-response');
+    var elC = document.getElementById('irt-calc-clearing');
+    var elRc = document.getElementById('irt-calc-recovery');
+    var elD = document.getElementById('irt-calc-distance');
+
+    elR.textContent = fmtMin(response);
+    elC.textContent = fmtMin(clearing);
+    elRc.textContent = fmtMin(recovery);
+    elD.textContent = dist;
+
+    elR.className = 'auto-calc' + (response !== null ? ' has-value' : '');
+    elC.className = 'auto-calc' + (clearing !== null ? ' has-value' : '');
+    elRc.className = 'auto-calc' + (recovery !== null ? ' has-value' : '');
+    elD.className = 'auto-calc' + (dist !== 'auto-calculated' ? ' has-value' : '');
+  }
+
+  // Photo preview
+  function previewPhoto(input, idx) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var el = document.getElementById('photo-prev-' + idx);
+      el.classList.add('has-photo');
+      var img = el.querySelector('img');
+      if (!img) { img = document.createElement('img'); el.appendChild(img); }
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Submit form
+  function submitIRT() {
+    var dir = document.querySelector('#irt-direction .toggle-btn.active');
+    if (!dir) { showToast('Please select a Direction.', 'error'); return; }
+
+    var report = {
+      id: Date.now(),
+      date: document.getElementById('irt-date').value,
+      expressway: document.getElementById('irt-expressway').value,
+      shift: document.getElementById('irt-shift').value,
+      weather: document.getElementById('irt-weather').value,
+      team: document.getElementById('irt-team').value,
+      leadman: document.getElementById('irt-leadman').value,
+      control: document.getElementById('irt-control').value,
+      direction: dir.dataset.val,
+      kmpost: document.getElementById('irt-kmpost').value,
+      locNotice: document.getElementById('irt-loc-notice').value,
+      lanes: document.getElementById('irt-lanes').value,
+      trafficFlow: (document.querySelector('#irt-traffic-flow .toggle-btn.active') || {}).dataset || {},
+      vehicle: document.getElementById('irt-vehicle').value,
+      category: document.getElementById('irt-category').value,
+      plate: document.getElementById('irt-plate').value,
+      mainActivity: document.getElementById('irt-main-activity').value,
+      subActivity: document.getElementById('irt-sub-activity').value,
+      trafficMgmt: document.getElementById('irt-traffic-mgmt').value,
+      action: document.getElementById('irt-action').value,
+      remarks: document.getElementById('irt-remarks').value,
+      timeNotif: document.getElementById('irt-time-notif').value,
+      odoNotif: document.getElementById('irt-odo-notif').value,
+      timeArrival: document.getElementById('irt-time-arrival').value,
+      odoArrival: document.getElementById('irt-odo-arrival').value,
+      timeCleared: document.getElementById('irt-time-cleared').value,
+      timeSiteCleared: document.getElementById('irt-time-site-cleared').value,
+      timeDeparture: document.getElementById('irt-time-departure').value,
+      responseTime: document.getElementById('irt-calc-response').textContent,
+      clearingTime: document.getElementById('irt-calc-clearing').textContent,
+      recoveryTime: document.getElementById('irt-calc-recovery').textContent,
+      distance: document.getElementById('irt-calc-distance').textContent,
+      submittedAt: new Date().toISOString()
+    };
+
+    report.trafficFlow = report.trafficFlow.val || '';
+
+    irtReports.push(report);
+    try { localStorage.setItem('savvice_irt_reports', JSON.stringify(irtReports)); } catch(e) {}
+
+    showToast('Incident report #' + irtReports.length + ' submitted successfully!', 'success');
+    document.getElementById('irt-form').reset();
+    document.getElementById('irt-date').value = today;
+    document.getElementById('irt-expressway').value = 'NLEX';
+    document.querySelectorAll('.toggle-btn.active').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.photo-placeholder').forEach(function(p) {
+      p.classList.remove('has-photo');
+      var img = p.querySelector('img');
+      if (img) img.remove();
+    });
+    ['irt-calc-response','irt-calc-clearing','irt-calc-recovery','irt-calc-distance'].forEach(function(id) {
+      var el = document.getElementById(id);
+      el.textContent = 'auto-calculated';
+      el.className = 'auto-calc';
+    });
+  }
+
+  // ============================================================
+  // ACTIVITY LOG
+  // ============================================================
+  function getFilteredReports() {
+    var date = document.getElementById('log-filter-date').value;
+    var team = document.getElementById('log-filter-team').value;
+    var cat = document.getElementById('log-filter-category').value;
+    return irtReports.filter(function(r) {
+      if (date && r.date !== date) return false;
+      if (team && r.team !== team) return false;
+      if (cat && r.category !== cat) return false;
+      return true;
+    });
+  }
+
+  function renderLog() {
+    var filtered = getFilteredReports();
+    var tbody = document.getElementById('log-table-body');
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10" class="empty-cell">No reports match the current filters.</td></tr>';
+      document.getElementById('log-count').textContent = '0 reports';
+      return;
+    }
+    var html = '';
+    filtered.forEach(function(r, i) {
+      var respBadge = r.responseTime && r.responseTime !== 'auto-calculated'
+        ? '<span class="pill ok" style="font-size:11px;">' + r.responseTime + '</span>'
+        : '<span style="color:var(--text-tertiary);font-size:12px;">—</span>';
+      html += '<tr>' +
+        '<td style="color:var(--text-tertiary);font-size:12px;">' + (i + 1) + '</td>' +
+        '<td>' + r.date + '</td>' +
+        '<td>' + r.shift + '</td>' +
+        '<td>' + r.team + '</td>' +
+        '<td>' + r.leadman + '</td>' +
+        '<td>' + r.category + '</td>' +
+        '<td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + r.kmpost + '</td>' +
+        '<td>' + r.direction + '</td>' +
+        '<td>' + respBadge + '</td>' +
+        '<td><button class="btn ghost" onclick="viewReport(' + r.id + ')">View</button></td>' +
+      '</tr>';
+    });
+    tbody.innerHTML = html;
+    document.getElementById('log-count').textContent = filtered.length + ' report' + (filtered.length > 1 ? 's' : '');
+  }
+
+  // View detail modal
+  function viewReport(id) {
+    var r = irtReports.find(function(x) { return x.id === id; });
+    if (!r) return;
+    var fields = [
+      ['Date', r.date], ['Shift', r.shift], ['Weather', r.weather], ['Team', r.team],
+      ['Leadman', r.leadman], ['Control No.', r.control],
+      ['Direction', r.direction], ['KM Post', r.kmpost],
+      ['Location Upon Notice', r.locNotice], ['Affected Lanes', r.lanes],
+      ['Traffic Flow', r.trafficFlow], ['Vehicle/Equipment', r.vehicle],
+      ['Category', r.category], ['Plate No.', r.plate],
+      ['Main Activity', r.mainActivity], ['Sub Activity', r.subActivity],
+      ['Traffic Mgmt', r.trafficMgmt], ['Action Taken', r.action],
+      ['Time Notified', r.timeNotif], ['Time Arrival', r.timeArrival],
+      ['Time Cleared', r.timeCleared], ['Time Site Cleared', r.timeSiteCleared],
+      ['Time Departure', r.timeDeparture], ['Response Time', r.responseTime],
+      ['Clearing Time', r.clearingTime], ['Recovery Time', r.recoveryTime],
+      ['Distance', r.distance], ['Remarks', r.remarks]
+    ];
+    var html = '<button class="modal-close" onclick="this.closest(\'.modal-overlay\').remove()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+    html += '<h3>Incident Report — ' + r.date + ' ' + r.shift + ' Shift</h3>';
+    html += '<div class="detail-grid">';
+    fields.forEach(function(f) {
+      html += '<div class="detail-item"><div class="detail-label">' + f[0] + '</div><div class="detail-value">' + (f[1] || '—') + '</div></div>';
+    });
+    html += '</div>';
+    var overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    overlay.innerHTML = '<div class="modal">' + html + '</div>';
+    document.body.appendChild(overlay);
+  }
+
+  // ============================================================
+  // SUMMARY BY DATE
+  // ============================================================
+  function renderSummary() {
+    var from = document.getElementById('sum-from').value;
+    var to = document.getElementById('sum-to').value;
+    var filtered = irtReports.filter(function(r) {
+      if (from && r.date < from) return false;
+      if (to && r.date > to) return false;
+      return true;
+    });
+    var container = document.getElementById('summary-content');
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><p>No data in the selected date range.</p></div>';
+      return;
+    }
+
+    // Group by date
+    var groups = {};
+    filtered.forEach(function(r) {
+      if (!groups[r.date]) groups[r.date] = [];
+      groups[r.date].push(r);
+    });
+
+    var dates = Object.keys(groups).sort().reverse();
+    var html = '';
+    dates.forEach(function(date) {
+      var items = groups[date];
+      var cats = {};
+      items.forEach(function(r) {
+        cats[r.category] = (cats[r.category] || 0) + 1;
+      });
+      var catList = Object.keys(cats).map(function(c) { return c + ': ' + cats[c]; }).join(', ');
+      var avgResp = items.filter(function(r) { return r.responseTime && r.responseTime !== 'auto-calculated'; });
+      var avgRespText = avgResp.length > 0 ? avgResp.length + ' recorded' : '—';
+
+      html += '<div class="summary-date-group">';
+      html += '<div class="summary-date-header"><span>' + date + '</span><span style="font-weight:400;color:var(--text-secondary);font-size:13px;">' + items.length + ' incident' + (items.length > 1 ? 's' : '') + '</span></div>';
+      html += '<div class="summary-stats">';
+      html += '<div class="summary-stat"><div class="n">' + items.length + '</div><div class="l">Total Incidents</div></div>';
+      html += '<div class="summary-stat"><div class="n">' + Object.keys(cats).length + '</div><div class="l">Categories</div></div>';
+      html += '<div class="summary-stat"><div class="n">' + avgRespText + '</div><div class="l">Response Times</div></div>';
+      var teams = [];
+      items.forEach(function(r) { if (teams.indexOf(r.team) === -1) teams.push(r.team); });
+      html += '<div class="summary-stat"><div class="n">' + teams.length + '</div><div class="l">Teams Active</div></div>';
+      html += '</div>';
+
+      // Category breakdown table
+      html += '<div style="padding:16px 24px;">';
+      html += '<table><thead><tr><th>Category</th><th>Count</th><th>Share</th></tr></thead><tbody>';
+      Object.keys(cats).sort().forEach(function(c) {
+        var pct = Math.round(cats[c] / items.length * 100);
+        html += '<tr><td>' + c + '</td><td>' + cats[c] + '</td><td><div style="display:flex;align-items:center;gap:8px;"><div style="width:60px;height:6px;background:var(--bg);border-radius:3px;overflow:hidden;"><div style="width:' + pct + '%;height:100%;background:var(--accent);border-radius:3px;"></div></div>' + pct + '%</td></tr>';
+      });
+      html += '</tbody></table></div>';
+      html += '</div>';
+    });
+
+    container.innerHTML = html;
+  }
+
+  // ============================================================
+  // EXPORT FUNCTIONS
+  // ============================================================
+  function exportLogsCSV() {
+    var data = getFilteredReports();
+    if (data.length === 0) { showToast('No data to export.', 'error'); return; }
+    var headers = ['Date','Shift','Weather','Team','Leadman','Control No','Direction','KM Post','Location Upon Notice','Affected Lanes','Traffic Flow','Vehicle','Category','Plate No','Main Activity','Sub Activity','Traffic Mgmt','Action Taken','Time Notified','Odom Notif','Time Arrival','Odom Arrival','Time Cleared','Time Site Cleared','Time Departure','Response Time','Clearing Time','Recovery Time','Distance','Remarks'];
+    var csv = headers.join(',') + '\n';
+    data.forEach(function(r) {
+      var row = [r.date,r.shift,r.weather,r.team,r.leadman,r.control,r.direction,r.kmpost,r.locNotice,r.lanes,r.trafficFlow,r.vehicle,r.category,r.plate,r.mainActivity,r.subActivity,r.trafficMgmt,r.action,r.timeNotif,r.odoNotif,r.timeArrival,r.odoArrival,r.timeCleared,r.timeSiteCleared,r.timeDeparture,r.responseTime,r.clearingTime,r.recoveryTime,r.distance,r.remarks];
+      csv += row.map(function(v) { return '"' + (v || '').replace(/"/g, '""') + '"'; }).join(',') + '\n';
+    });
+    downloadFile(csv, 'NLEX_IRT_Activity_Log.csv', 'text/csv;charset=utf-8;');
+    showToast('Activity log exported as CSV.', 'success');
+  }
+
+  function exportSummaryCSV() {
+    if (irtReports.length === 0) { showToast('No data to export.', 'error'); return; }
+    var csv = 'Date,Total Incidents,Categories,Teams Active\n';
+    var groups = {};
+    irtReports.forEach(function(r) {
+      if (!groups[r.date]) groups[r.date] = [];
+      groups[r.date].push(r);
+    });
+    Object.keys(groups).sort().forEach(function(date) {
+      var items = groups[date];
+      var cats = {};
+      items.forEach(function(r) { cats[r.category] = 1; });
+      var teams = [];
+      items.forEach(function(r) { if (teams.indexOf(r.team) === -1) teams.push(r.team); });
+      csv += '"' + date + '",' + items.length + ',' + Object.keys(cats).length + ',' + teams.length + '\n';
+    });
+    downloadFile(csv, 'NLEX_IRT_Summary.csv', 'text/csv;charset=utf-8;');
+    showToast('Summary exported as CSV.', 'success');
+  }
+
+  function exportLogsPDF() { exportPDF('Activity Log', getFilteredReports()); }
+  function exportSummaryPDF() { exportPDF('Summary', irtReports); }
+
+  function exportPDF(title, data) {
+    if (data.length === 0) { showToast('No data to export.', 'error'); return; }
+    var w = window.open('', '_blank');
+    var html = '<!DOCTYPE html><html><head><title>NLEX IRT ' + title + '</title>';
+    html += '<style>body{font-family:Arial,sans-serif;padding:40px;color:#1d1d1f;font-size:12px;}h1{font-size:20px;margin-bottom:4px;}h2{font-size:14px;color:#86868b;font-weight:400;margin-bottom:24px;}table{width:100%;border-collapse:collapse;margin-bottom:24px;}th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;font-size:11px;}th{background:#f5f5f7;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;font-size:10px;}tr:nth-child(even){background:#fafafa;}.footer{margin-top:40px;font-size:10px;color:#86868b;border-top:1px solid #ddd;padding-top:12px;}@media print{body{padding:20px;}}@page{size:landscape;margin:15mm;}</style>';
+    html += '</head><body>';
+    html += '<h1>SAVVICE — NLEX IRT ' + title + '</h1>';
+    html += '<h2>Generated: ' + new Date().toLocaleString() + ' | Records: ' + data.length + '</h2>';
+
+    if (title === 'Summary') {
+      var groups = {};
+      data.forEach(function(r) { if (!groups[r.date]) groups[r.date] = []; groups[r.date].push(r); });
+      Object.keys(groups).sort().reverse().forEach(function(date) {
+        var items = groups[date];
+        html += '<h3 style="margin-top:20px;font-size:13px;">' + date + ' — ' + items.length + ' incident(s)</h3>';
+        html += '<table><tr><th>Team</th><th>Shift</th><th>Category</th><th>KM Post</th><th>Direction</th><th>Response Time</th><th>Action Taken</th></tr>';
+        items.forEach(function(r) {
+          html += '<tr><td>' + r.team + '</td><td>' + r.shift + '</td><td>' + r.category + '</td><td>' + r.kmpost + '</td><td>' + r.direction + '</td><td>' + (r.responseTime || '—') + '</td><td>' + (r.action || '—') + '</td></tr>';
+        });
+        html += '</table>';
+      });
+    } else {
+      html += '<table><tr><th>Date</th><th>Shift</th><th>Team</th><th>Leadman</th><th>Category</th><th>KM Post</th><th>Direction</th><th>Response</th><th>Action</th><th>Remarks</th></tr>';
+      data.forEach(function(r) {
+        html += '<tr><td>' + r.date + '</td><td>' + r.shift + '</td><td>' + r.team + '</td><td>' + r.leadman + '</td><td>' + r.category + '</td><td>' + r.kmpost + '</td><td>' + r.direction + '</td><td>' + (r.responseTime || '—') + '</td><td>' + (r.action || '—') + '</td><td>' + (r.remarks || '—') + '</td></tr>';
+      });
+      html += '</table>';
+    }
+
+    html += '<div class="footer">Savvice Corporation — NLEX Incident Response Team | Confidential</div>';
+    html += '<script>setTimeout(function(){window.print();},500);<\/script>';
+    html += '</body></html>';
+    w.document.write(html);
+    w.document.close();
+    showToast('PDF ready — use browser print dialog to save.', 'success');
+  }
+
+  function downloadFile(content, filename, type) {
+    var blob = new Blob([content], { type: type });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   // Auto-load NLEX IRT manpower into attendance
   attendanceData = nlex_irt_manpower.map(function(e) {
     return { id: e.id, name: e.name, team: e.team, role: e.role, status: 'unmarked', selected: false };
@@ -1523,6 +2470,21 @@
     mpBody.innerHTML = mpHtml;
   }
 
+  // Refresh dashboard with real data
+  function refreshDashboard() {
+    if (irtReports.length > 0) {
+      var tbody = document.querySelector('#view-dashboard table tbody');
+      var recent = irtReports.slice(-4).reverse();
+      var html = '';
+      recent.forEach(function(r) {
+        var initials = r.team.substring(0, 2).toUpperCase();
+        html += '<tr><td><span class="avatar-sm">' + initials + '</span>' + r.team + '</td><td>' + r.category + '</td><td>' + r.kmpost + '</td><td>' + r.leadman + '</td><td><span class="pill ok"><span class="dot"></span>' + r.shift + '</span></td></tr>';
+      });
+      tbody.innerHTML = html;
+    }
+  }
+
+  refreshDashboard();
   setRole('admin');
   goTo('dashboard');
 
