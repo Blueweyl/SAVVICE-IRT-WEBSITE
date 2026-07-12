@@ -597,7 +597,16 @@
 
     var isAdmin = ADMIN_EMAILS.map(function(e) { return e.toLowerCase(); }).indexOf(email.toLowerCase()) !== -1;
 
-    sb.auth.signUp({ email: email, password: password })
+    // Profile row is created server-side by a database trigger (see
+    // supabase-setup.sql) once auth.users gets this new row, using the
+    // metadata passed here. This avoids a client-side insert racing
+    // against RLS before a session exists (e.g. when email confirmation
+    // is required).
+    sb.auth.signUp({
+      email: email,
+      password: password,
+      options: { data: { display_name: name, team: team, position: position } }
+    })
       .then(function(res) {
         if (res.error) {
           showError(res.error.message);
@@ -614,38 +623,17 @@
           return;
         }
 
-        var profileData = {
-          id: user.id,
-          email: email,
-          display_name: name,
-          team: team,
-          position: position,
-          system_role: isAdmin ? 'admin' : 'supervisor',
-          status: isAdmin ? 'approved' : 'pending',
-          registered_at: new Date().toISOString()
-        };
-
-        sb.from('profiles').insert(profileData)
-          .then(function(insertRes) {
-            if (insertRes.error) {
-              showError('Profile creation failed: ' + insertRes.error.message);
-              btn.textContent = 'Create Account';
-              btn.disabled = false;
-              return;
-            }
-
-            if (isAdmin) {
-              showSuccess('Admin account created! Redirecting...');
-              setTimeout(function() { window.location.href = 'console.html'; }, 1000);
-            } else {
-              sb.auth.signOut();
-              document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-              document.querySelectorAll('.form-panel').forEach(function(p) { p.classList.remove('active'); p.style.display = 'none'; });
-              document.getElementById('panel-pending').style.display = 'block';
-              btn.textContent = 'Create Account';
-              btn.disabled = false;
-            }
-          });
+        if (isAdmin) {
+          showSuccess('Admin account created! Redirecting...');
+          setTimeout(function() { window.location.href = 'console.html'; }, 1000);
+        } else {
+          sb.auth.signOut();
+          document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+          document.querySelectorAll('.form-panel').forEach(function(p) { p.classList.remove('active'); p.style.display = 'none'; });
+          document.getElementById('panel-pending').style.display = 'block';
+          btn.textContent = 'Create Account';
+          btn.disabled = false;
+        }
       });
   }
 

@@ -200,3 +200,44 @@ end;
 $$;
 
 grant execute on function public.admin_delete_user(uuid) to authenticated;
+
+-- ============================================================
+-- Auto-create the profile row on signup via a trigger on auth.users.
+-- Fixes "new row violates row-level security policy for table profiles":
+-- when Supabase requires email confirmation, sb.auth.signUp() returns no
+-- session, so a client-side profiles.insert() right after signUp has no
+-- auth.uid() and fails RLS. A SECURITY DEFINER trigger bypasses that
+-- entirely and always creates the row, confirmation or not.
+-- Keep the admin email list below in sync with ADMIN_EMAILS in
+-- supabase-config.js.
+-- ============================================================
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  is_admin_email boolean;
+begin
+  is_admin_email := lower(new.email) = any(array['admin@savvice.com', 'upupandawey24@gmail.com']);
+  insert into public.profiles (id, email, display_name, team, position, system_role, status, registered_at)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data->>'display_name', new.email),
+    new.raw_user_meta_data->>'team',
+    new.raw_user_meta_data->>'position',
+    case when is_admin_email then 'admin' else 'supervisor' end,
+    case when is_admin_email then 'approved' else 'pending' end,
+    now()
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
