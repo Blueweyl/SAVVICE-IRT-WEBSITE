@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Savvice IRT Website
 
 ## Project Overview
@@ -5,6 +9,9 @@ Operations website and console for Savvice Corporation's NLEX Incident Response 
 
 **Live URL**: https://blueweyl.github.io/SAVVICE-IRT-WEBSITE/
 **Repo**: https://github.com/Blueweyl/SAVVICE-IRT-WEBSITE
+
+## Development
+No build step, no package manager, no test suite. To preview changes, open the HTML files directly in a browser or serve the directory with any static file server (e.g. `npx serve` or `python -m http.server`) — auth/Supabase calls work the same either way since `supabase-config.js` points at the live Supabase project. There is no local/staging Supabase instance; all testing hits production data. Deploys happen automatically via GitHub Pages on push to `master`.
 
 ## File Structure
 ```
@@ -38,7 +45,7 @@ Defined in `supabase-config.js` as `ADMIN_EMAILS` array:
 Single-page app with view switching. All CSS is inline in `<style>`, all JS is inline in `<script>`.
 
 ### Views (switched via `goTo(viewName)`)
-- `dashboard` — KPI cards, charts, recent activity
+- `dashboard` — KPI cards, charts (plain CSS bars, no charting library), recent activity
 - `activity` — IRT incident report form, activity log, summary (3 tabs)
 - `attendance` — Upload manpower CSV, mark present/absent for 59 employees
 - `manpower` — Auto-populated from `nlex_irt_manpower` array (59 NLEX IRT employees)
@@ -85,6 +92,6 @@ Toggle button in Daily Activity view. CSS class `dark-mode` on `.content`. Prefe
 ## Conventions
 - No build tools, no npm, no bundler — everything runs directly in browser
 - Supabase SDK loaded via CDN: `@supabase/supabase-js@2`
-- All inline in console.html (CSS ~1400 lines, HTML ~600 lines, JS ~900 lines)
+- console.html is ~3460 lines total (CSS + HTML + JS all inline in one file)
 - Toast notifications via `showToast(msg, type)`
 - Empty states show centered icon + message text

@@ -1148,6 +1148,83 @@
     box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
 
+  /* Attendance toolbar (date nav + area filter) */
+  .att-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .att-toolbar-day {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .att-toolbar-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .att-toolbar-controls input[type="date"],
+  .att-toolbar-controls select {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 7px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--text-primary);
+    outline: none;
+  }
+
+  .att-badges {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .att-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--bg);
+    color: var(--text-secondary);
+  }
+
+  .att-badge b { font-weight: 700; }
+  .att-badge.present { background: var(--green-bg); color: #1a8a3e; }
+  .att-badge.absent { background: var(--red-bg); color: var(--red); }
+
+  .pos-input,
+  .remarks-input {
+    width: 100%;
+    min-width: 140px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--blue);
+    padding: 6px 8px;
+    border-radius: var(--radius-xs);
+    outline: none;
+  }
+
+  .remarks-input { color: var(--text-primary); }
+
+  .pos-input:hover, .remarks-input:hover { border-color: var(--border); }
+  .pos-input:focus, .remarks-input:focus {
+    border-color: var(--accent);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+
+  .remarks-input::placeholder { color: var(--text-tertiary); }
+
   .att-search-box {
     display: flex;
     align-items: center;
@@ -1181,33 +1258,29 @@
   /* Status toggle buttons */
   .status-toggle {
     display: inline-flex;
-    border-radius: var(--radius-xs);
-    overflow: hidden;
-    border: 1px solid var(--border);
+    gap: 8px;
   }
 
   .status-toggle button {
-    padding: 6px 14px;
+    padding: 6px 16px;
     font-size: 12px;
     font-weight: 600;
-    border: none;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
     background: var(--surface);
     color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.15s ease;
-    border-right: 1px solid var(--border);
     font-family: inherit;
   }
-
-  .status-toggle button:last-child { border-right: none; }
 
   .status-toggle button:hover {
     background: var(--bg);
   }
 
   .status-toggle button.active-present {
-    background: var(--green);
-    color: #fff;
+    background: var(--green-bg);
+    color: #1a8a3e;
     border-color: var(--green);
   }
 
@@ -1506,6 +1579,18 @@
     background: #2c2c2e;
     border-color: #3a3a3c;
     color: #aeaeb2;
+  }
+
+  .dark-mode .status-toggle button.active-present {
+    background: var(--green-bg);
+    border-color: var(--green);
+    color: #34c759;
+  }
+
+  .dark-mode .status-toggle button.active-absent {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
   }
 
   .dark-mode .att-search-box {
@@ -2028,9 +2113,6 @@
         <div class="panel" id="att-upload-panel">
           <div class="panel-head">
             <h3>Attendance</h3>
-            <div class="actions">
-              <input type="date" id="att-date" value="2026-06-28" style="border:1px solid var(--border);border-radius:var(--radius-xs);padding:7px 12px;font-family:inherit;font-size:13px;background:var(--surface);color:var(--text-primary);outline:none;">
-            </div>
           </div>
           <div class="panel-body">
             <div class="upload-zone" id="uploadZone">
@@ -2059,13 +2141,28 @@
 
         <!-- Attendance marking area (shown after data loaded) -->
         <div id="att-workspace" style="display:none;">
-          <div class="stat-strip-wrap">
-            <div class="stat-strip">
-              <div class="s"><div class="n" id="att-count-total" style="color:var(--blue);">0</div><div class="l">Total</div></div>
-              <div class="s"><div class="n" id="att-count-present" style="color:var(--green);">0</div><div class="l">Present</div></div>
-              <div class="s"><div class="n" id="att-count-absent" style="color:var(--red);">0</div><div class="l">Absent</div></div>
-              <div class="s"><div class="n" id="att-count-unmarked" style="color:var(--text-tertiary);">0</div><div class="l">Unmarked</div></div>
+          <div class="att-toolbar">
+            <div class="att-toolbar-day" id="att-day-name">—</div>
+            <div class="att-toolbar-controls">
+              <button class="btn ghost" onclick="shiftAttendanceDate(-1)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Prev
+              </button>
+              <input type="date" id="att-date" value="2026-06-28" onchange="changeAttendanceDate()">
+              <button class="btn ghost" onclick="shiftAttendanceDate(1)">
+                Next
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+              <select id="att-filter-area" onchange="filterAttendance()">
+                <option value="">All areas</option>
+              </select>
             </div>
+          </div>
+
+          <div class="att-badges">
+            <span class="att-badge total">Total: <b id="att-count-total">0</b></span>
+            <span class="att-badge present">Present: <b id="att-count-present">0</b></span>
+            <span class="att-badge absent">Absent: <b id="att-count-absent">0</b></span>
           </div>
 
           <div class="panel">
@@ -2099,14 +2196,10 @@
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 <input type="text" id="att-search" placeholder="Search by name..." oninput="filterAttendance()">
               </div>
-              <select id="att-filter-team" onchange="filterAttendance()">
-                <option value="">All Teams</option>
-              </select>
               <select id="att-filter-status" onchange="filterAttendance()">
                 <option value="">All Status</option>
                 <option value="present">Present</option>
                 <option value="absent">Absent</option>
-                <option value="unmarked">Unmarked</option>
               </select>
               <button class="btn ghost" onclick="showUploadPanel()" style="margin-left:auto;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -2118,11 +2211,11 @@
                 <tr>
                   <th style="width:32px;"><input type="checkbox" id="att-select-all" onchange="toggleSelectAll(this)" title="Select all"></th>
                   <th>#</th>
-                  <th>Employee</th>
+                  <th>Name</th>
                   <th>Team</th>
-                  <th>Role</th>
+                  <th>Position</th>
                   <th>Status</th>
-                  <th style="text-align:center;">Actions</th>
+                  <th>Remarks</th>
                 </tr>
               </thead>
               <tbody id="att-table-body">
@@ -2474,6 +2567,68 @@
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('active');
   }
+
+  var nlex_irt_manpower = [
+    { id: '1', name: 'Mark Anthony De Guzman', team: 'NLEX IRT', role: 'Supervisor', status: 'unmarked', selected: false },
+    { id: '2', name: 'Marcial Agustin', team: 'NLEX IRT', role: 'Warehouseman', status: 'unmarked', selected: false },
+    { id: '3', name: 'Agapito Lapinig', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '4', name: 'Michael Geronimo', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '5', name: 'Jervis De Jesus', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '6', name: 'Romy Pongautan', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '7', name: 'Romar Roxas', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '8', name: 'Rellinito Polintan', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '9', name: 'Roso Gamones', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '10', name: 'Joel Lecaros', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '11', name: 'Emil Reyes', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '12', name: 'Edsel Juntilla', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '13', name: 'Alvin Delos Santos', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '14', name: 'Jaymark Villafania', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '15', name: 'Rizaldy Romaquin', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '16', name: 'Arman Villafuerte', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '17', name: 'Elino Sanchez', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '18', name: 'Elino Guinarez', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '19', name: 'Crisanto Esguerra', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '20', name: 'Joel Olarte', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '21', name: 'Emmanuel Sandrino', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '22', name: 'Erwin Clarin', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '23', name: 'Rodel De Leon', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '24', name: 'Rolito Alico', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '25', name: 'Gabriel Alcoriza', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '26', name: 'Crismark Sabino', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '27', name: 'John Robert Teano', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '28', name: 'Diether Juan', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '29', name: 'Shagie Villa', team: 'NLEX IRT', role: 'Operator 3', status: 'unmarked', selected: false },
+    { id: '30', name: 'Heracleo Martir', team: 'NLEX IRT', role: 'Operator 3', status: 'unmarked', selected: false },
+    { id: '31', name: 'Florentino Barcenas', team: 'NLEX IRT', role: 'Operator 3', status: 'unmarked', selected: false },
+    { id: '32', name: 'Ferdinand Ortega', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '33', name: 'Reginal Villacorta', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '34', name: 'Jose Zaballa', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '35', name: 'Mark Gil Ferrer', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '36', name: 'Joel Sunga', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '37', name: 'Rowel Capalad', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
+    { id: '38', name: 'Resty Dizon', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '39', name: 'Felix Manalad', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '40', name: 'Renny Boy Furigay', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '41', name: 'Patrick Cruz', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '42', name: 'Jonas Roble', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '43', name: 'Cecilio Umali', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '44', name: 'Francis Monterde', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '45', name: 'Jayson Amparo', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '46', name: 'Lester Bautista', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '47', name: 'Alvin Guliman', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '48', name: 'Manolito Eusebio', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '49', name: 'Nestor Besas', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '50', name: 'Mike Savares', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '51', name: 'Jancen Balajadia', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
+    { id: '52', name: 'Ariel Pascual', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '53', name: 'Dheniel Escartin', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '54', name: 'Adrian Mercado', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '55', name: 'Kenneth Baello', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
+    { id: '56', name: 'Jobert Delos Santos', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '57', name: 'Carlito Clemente Jr.', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
+    { id: '58', name: 'Bencil Pedra', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
+    { id: '59', name: 'Jonrel Ocang', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false }
+  ];
 
   // ============================================================
   // INCIDENT REPORT SYSTEM
@@ -2894,29 +3049,6 @@
     URL.revokeObjectURL(url);
   }
 
-  // Auto-load NLEX IRT manpower into attendance
-  attendanceData = nlex_irt_manpower.map(function(e) {
-    return { id: e.id, name: e.name, team: e.team, role: e.role, status: 'unmarked', selected: false };
-  });
-
-  // Populate manpower table from real data
-  var mpBody = document.getElementById('manpower-table-body');
-  if (mpBody) {
-    var mpHtml = '';
-    nlex_irt_manpower.forEach(function(emp) {
-      var initials = emp.name.split(/[\s.]+/).filter(function(p) { return p.length > 0; }).map(function(p) { return p[0]; }).join('').toUpperCase().substring(0, 2);
-      mpHtml += '<tr>' +
-        '<td><span class="avatar-sm">' + initials + '</span>' + emp.name + '</td>' +
-        '<td>' + emp.id + '</td>' +
-        '<td>' + emp.team + '</td>' +
-        '<td>' + emp.role + '</td>' +
-        '<td>NLEX Corridor</td>' +
-        '<td><span class="pill ok"><span class="dot"></span>Active</span></td>' +
-      '</tr>';
-    });
-    mpBody.innerHTML = mpHtml;
-  }
-
   // ============================================================
   // ADMIN — USER MANAGEMENT
   // ============================================================
@@ -3121,7 +3253,8 @@
         name: empName,
         team: teamIdx > -1 ? (cols[teamIdx] || '') : '',
         role: roleIdx > -1 ? (cols[roleIdx] || '') : '',
-        status: 'unmarked',
+        status: 'absent',
+        remarks: '',
         selected: false
       });
     }
@@ -3160,88 +3293,46 @@
     return -1;
   }
 
-  var nlex_irt_manpower = [
-    { id: '1', name: 'Mark Anthony De Guzman', team: 'NLEX IRT', role: 'Supervisor', status: 'unmarked', selected: false },
-    { id: '2', name: 'Marcial Agustin', team: 'NLEX IRT', role: 'Warehouseman', status: 'unmarked', selected: false },
-    { id: '3', name: 'Agapito Lapinig', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '4', name: 'Michael Geronimo', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
-    { id: '5', name: 'Jervis De Jesus', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '6', name: 'Romy Pongautan', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '7', name: 'Romar Roxas', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
-    { id: '8', name: 'Rellinito Polintan', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '9', name: 'Roso Gamones', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '10', name: 'Joel Lecaros', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
-    { id: '11', name: 'Emil Reyes', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '12', name: 'Edsel Juntilla', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '13', name: 'Alvin Delos Santos', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '14', name: 'Jaymark Villafania', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '15', name: 'Rizaldy Romaquin', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '16', name: 'Arman Villafuerte', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
-    { id: '17', name: 'Elino Sanchez', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '18', name: 'Elino Guinarez', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '19', name: 'Crisanto Esguerra', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
-    { id: '20', name: 'Joel Olarte', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '21', name: 'Emmanuel Sandrino', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '22', name: 'Erwin Clarin', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
-    { id: '23', name: 'Rodel De Leon', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '24', name: 'Rolito Alico', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '25', name: 'Gabriel Alcoriza', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
-    { id: '26', name: 'Crismark Sabino', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
-    { id: '27', name: 'John Robert Teano', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
-    { id: '28', name: 'Diether Juan', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
-    { id: '29', name: 'Shagie Villa', team: 'NLEX IRT', role: 'Operator 3', status: 'unmarked', selected: false },
-    { id: '30', name: 'Heracleo Martir', team: 'NLEX IRT', role: 'Operator 3', status: 'unmarked', selected: false },
-    { id: '31', name: 'Florentino Barcenas', team: 'NLEX IRT', role: 'Operator 3', status: 'unmarked', selected: false },
-    { id: '32', name: 'Ferdinand Ortega', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
-    { id: '33', name: 'Reginal Villacorta', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
-    { id: '34', name: 'Jose Zaballa', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
-    { id: '35', name: 'Mark Gil Ferrer', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
-    { id: '36', name: 'Joel Sunga', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
-    { id: '37', name: 'Rowel Capalad', team: 'NLEX IRT', role: 'Operator 1', status: 'unmarked', selected: false },
-    { id: '38', name: 'Resty Dizon', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '39', name: 'Felix Manalad', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '40', name: 'Renny Boy Furigay', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '41', name: 'Patrick Cruz', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '42', name: 'Jonas Roble', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
-    { id: '43', name: 'Cecilio Umali', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '44', name: 'Francis Monterde', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
-    { id: '45', name: 'Jayson Amparo', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '46', name: 'Lester Bautista', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
-    { id: '47', name: 'Alvin Guliman', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
-    { id: '48', name: 'Manolito Eusebio', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '49', name: 'Nestor Besas', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '50', name: 'Mike Savares', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '51', name: 'Jancen Balajadia', team: 'NLEX IRT', role: 'Crew', status: 'unmarked', selected: false },
-    { id: '52', name: 'Ariel Pascual', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '53', name: 'Dheniel Escartin', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '54', name: 'Adrian Mercado', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '55', name: 'Kenneth Baello', team: 'NLEX IRT', role: 'Operator 2', status: 'unmarked', selected: false },
-    { id: '56', name: 'Jobert Delos Santos', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '57', name: 'Carlito Clemente Jr.', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false },
-    { id: '58', name: 'Bencil Pedra', team: 'NLEX IRT', role: 'Leadman', status: 'unmarked', selected: false },
-    { id: '59', name: 'Jonrel Ocang', team: 'NLEX IRT', role: 'Rigger', status: 'unmarked', selected: false }
-  ];
+  // Auto-load NLEX IRT manpower into attendance
+  attendanceData = nlex_irt_manpower.map(function(e) {
+    return { id: e.id, name: e.name, team: e.team, role: e.role, status: 'absent', remarks: '', selected: false };
+  });
+
+  // Populate manpower table from real data
+  var mpBody = document.getElementById('manpower-table-body');
+  if (mpBody) {
+    var mpHtml = '';
+    nlex_irt_manpower.forEach(function(emp) {
+      var initials = emp.name.split(/[\s.]+/).filter(function(p) { return p.length > 0; }).map(function(p) { return p[0]; }).join('').toUpperCase().substring(0, 2);
+      mpHtml += '<tr>' +
+        '<td><span class="avatar-sm">' + initials + '</span>' + emp.name + '</td>' +
+        '<td>' + emp.id + '</td>' +
+        '<td>' + emp.team + '</td>' +
+        '<td>' + emp.role + '</td>' +
+        '<td>NLEX Corridor</td>' +
+        '<td><span class="pill ok"><span class="dot"></span>Active</span></td>' +
+      '</tr>';
+    });
+    mpBody.innerHTML = mpHtml;
+  }
 
   function loadSampleData() {
     attendanceData = nlex_irt_manpower.map(function(e) {
-      return { id: e.id, name: e.name, team: e.team, role: e.role, status: 'unmarked', selected: false };
+      return { id: e.id, name: e.name, team: e.team, role: e.role, status: 'absent', remarks: '', selected: false };
     });
     showToast(attendanceData.length + ' NLEX IRT employees loaded.', 'success');
     activateWorkspace();
   }
 
+  var defaultRoleByName = {};
+  nlex_irt_manpower.forEach(function(e) { defaultRoleByName[e.name] = e.role; });
+
   function activateWorkspace() {
     document.getElementById('att-upload-panel').style.display = 'none';
     document.getElementById('att-workspace').style.display = 'block';
 
-    var dateVal = document.getElementById('att-date').value;
-    var dateObj = new Date(dateVal + 'T00:00:00');
-    var formatted = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    document.getElementById('att-panel-title').textContent = 'Attendance — ' + formatted;
-
-    populateTeamFilter();
-    renderTable();
-    updateCounts();
+    populateAreaFilter();
+    changeAttendanceDate();
   }
 
   function showUploadPanel() {
@@ -3249,14 +3340,42 @@
     document.getElementById('att-workspace').style.display = 'none';
   }
 
-  function populateTeamFilter() {
+  function shiftAttendanceDate(delta) {
+    var input = document.getElementById('att-date');
+    var d = new Date(input.value + 'T00:00:00');
+    d.setDate(d.getDate() + delta);
+    input.value = d.toISOString().slice(0, 10);
+    changeAttendanceDate();
+  }
+
+  function changeAttendanceDate() {
+    var dateVal = document.getElementById('att-date').value;
+    var dateObj = new Date(dateVal + 'T00:00:00');
+    var formatted = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    document.getElementById('att-panel-title').textContent = 'Attendance — ' + formatted;
+    document.getElementById('att-day-name').textContent = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+
+    loadAttendanceFromSupabase(dateVal, function(records) {
+      attendanceData.forEach(function(emp) {
+        var saved = records && records.filter(function(r) { return r.name === emp.name; })[0];
+        emp.status = saved ? saved.status : 'absent';
+        emp.remarks = saved ? (saved.remarks || '') : '';
+        emp.role = saved && saved.role ? saved.role : (defaultRoleByName[emp.name] || emp.role);
+        emp.selected = false;
+      });
+      renderTable();
+      updateCounts();
+    });
+  }
+
+  function populateAreaFilter() {
     var teams = [];
     attendanceData.forEach(function(emp) {
       if (emp.team && teams.indexOf(emp.team) === -1) teams.push(emp.team);
     });
     teams.sort();
-    var sel = document.getElementById('att-filter-team');
-    sel.innerHTML = '<option value="">All Teams</option>';
+    var sel = document.getElementById('att-filter-area');
+    sel.innerHTML = '<option value="">All areas</option>';
     teams.forEach(function(t) {
       sel.innerHTML += '<option value="' + t + '">' + t + '</option>';
     });
@@ -3264,7 +3383,7 @@
 
   function getFilteredData() {
     var search = document.getElementById('att-search').value.toLowerCase();
-    var team = document.getElementById('att-filter-team').value;
+    var team = document.getElementById('att-filter-area').value;
     var status = document.getElementById('att-filter-status').value;
 
     return attendanceData.filter(function(emp) {
@@ -3279,6 +3398,10 @@
     return name.split(/[\s.]+/).filter(function(p) { return p.length > 0; }).map(function(p) { return p[0]; }).join('').toUpperCase().substring(0, 2);
   }
 
+  function escapeAttr(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
   function renderTable() {
     var filtered = getFilteredData();
     var tbody = document.getElementById('att-table-body');
@@ -3288,15 +3411,6 @@
       var globalIdx = attendanceData.indexOf(emp);
       var initials = getInitials(emp.name);
 
-      var statusHtml;
-      if (emp.status === 'present') {
-        statusHtml = '<span class="pill ok"><span class="dot"></span>Present</span>';
-      } else if (emp.status === 'absent') {
-        statusHtml = '<span class="pill bad"><span class="dot"></span>Absent</span>';
-      } else {
-        statusHtml = '<span class="pill" style="background:var(--bg);color:var(--text-tertiary);"><span class="dot" style="background:var(--text-tertiary);"></span>Unmarked</span>';
-      }
-
       var presentActive = emp.status === 'present' ? ' active-present' : '';
       var absentActive = emp.status === 'absent' ? ' active-absent' : '';
 
@@ -3305,16 +3419,12 @@
         '<td><span class="att-row-num">' + (idx + 1) + '</span></td>' +
         '<td><span class="avatar-sm">' + initials + '</span>' + emp.name + '</td>' +
         '<td>' + (emp.team || '—') + '</td>' +
-        '<td>' + (emp.role || '—') + '</td>' +
-        '<td>' + statusHtml + '</td>' +
-        '<td style="text-align:center;"><div class="status-toggle">' +
-          '<button class="' + presentActive + '" onclick="setStatus(' + globalIdx + ',\'present\')" title="Mark Present">' +
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' +
-          '</button>' +
-          '<button class="' + absentActive + '" onclick="setStatus(' + globalIdx + ',\'absent\')" title="Mark Absent">' +
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-          '</button>' +
+        '<td><input class="pos-input" value="' + escapeAttr(emp.role) + '" onchange="updateRole(' + globalIdx + ', this.value)"></td>' +
+        '<td><div class="status-toggle">' +
+          '<button class="' + presentActive + '" onclick="setStatus(' + globalIdx + ',\'present\')">Present</button>' +
+          '<button class="' + absentActive + '" onclick="setStatus(' + globalIdx + ',\'absent\')">Absent</button>' +
         '</div></td>' +
+        '<td><input class="remarks-input" placeholder="Optional remarks" value="' + escapeAttr(emp.remarks) + '" oninput="updateRemarks(' + globalIdx + ', this.value)"></td>' +
       '</tr>';
     });
 
@@ -3326,12 +3436,20 @@
 
   function setStatus(idx, status) {
     if (attendanceData[idx].status === status) {
-      attendanceData[idx].status = 'unmarked';
+      attendanceData[idx].status = 'absent';
     } else {
       attendanceData[idx].status = status;
     }
     renderTable();
     updateCounts();
+  }
+
+  function updateRole(idx, value) {
+    attendanceData[idx].role = value;
+  }
+
+  function updateRemarks(idx, value) {
+    attendanceData[idx].remarks = value;
   }
 
   function markAllStatus(status) {
@@ -3342,7 +3460,7 @@
 
   function resetAttendance() {
     attendanceData.forEach(function(emp) {
-      emp.status = 'unmarked';
+      emp.status = 'absent';
       emp.selected = false;
     });
     renderTable();
@@ -3353,12 +3471,10 @@
     var total = attendanceData.length;
     var present = attendanceData.filter(function(e) { return e.status === 'present'; }).length;
     var absent = attendanceData.filter(function(e) { return e.status === 'absent'; }).length;
-    var unmarked = total - present - absent;
 
     document.getElementById('att-count-total').textContent = total;
     document.getElementById('att-count-present').textContent = present;
     document.getElementById('att-count-absent').textContent = absent;
-    document.getElementById('att-count-unmarked').textContent = unmarked;
   }
 
   function filterAttendance() {
@@ -3409,14 +3525,9 @@
 
   // Save
   function saveAttendance() {
-    var unmarked = attendanceData.filter(function(e) { return e.status === 'unmarked'; }).length;
-    if (unmarked > 0) {
-      if (!confirm(unmarked + ' employee(s) are still unmarked. Save anyway?')) return;
-    }
     var dateVal = document.getElementById('att-date').value;
-    var key = 'savvice_attendance_' + dateVal;
     var saveData = attendanceData.map(function(e) {
-      return { name: e.name, team: e.team, role: e.role, id: e.id, status: e.status };
+      return { name: e.name, team: e.team, role: e.role, id: e.id, status: e.status, remarks: e.remarks };
     });
     saveAttendanceToSupabase(dateVal, saveData);
   }
@@ -3424,9 +3535,9 @@
   // Export CSV
   function exportAttendance() {
     var dateVal = document.getElementById('att-date').value;
-    var csv = 'Name,Team,Role,ID,Status\n';
+    var csv = 'Name,Team,Role,ID,Status,Remarks\n';
     attendanceData.forEach(function(emp) {
-      csv += '"' + emp.name + '","' + emp.team + '","' + emp.role + '","' + emp.id + '","' + emp.status + '"\n';
+      csv += '"' + emp.name + '","' + emp.team + '","' + emp.role + '","' + emp.id + '","' + emp.status + '","' + (emp.remarks || '') + '"\n';
     });
     var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     var url = URL.createObjectURL(blob);
