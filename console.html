@@ -1226,6 +1226,18 @@
 
   .remarks-input::placeholder { color: var(--text-tertiary); }
 
+  .ft-qty-input.mismatch {
+    border-color: var(--red) !important;
+    background: var(--red-bg);
+    color: var(--red);
+    font-weight: 600;
+  }
+
+  .ft-qty-input.match {
+    border-color: var(--green) !important;
+    background: var(--green-bg);
+  }
+
   .att-search-box {
     display: flex;
     align-items: center;
@@ -2284,6 +2296,7 @@
               <div class="form-section-head">
                 <span class="form-section-icon" style="background:#007aff;">🧰</span>
                 <h3>Equipment and PPE's</h3>
+                <button type="button" class="btn ghost" style="margin-left:auto;font-size:12px;padding:6px 12px;" onclick="fillFTCategoryExpected('equipment')">Mark All Present</button>
               </div>
               <div style="overflow-x:auto;">
                 <table>
@@ -2297,6 +2310,7 @@
               <div class="form-section-head">
                 <span class="form-section-icon" style="background:#ff9f0a;">🔧</span>
                 <h3>Tools and Accessories</h3>
+                <button type="button" class="btn ghost" style="margin-left:auto;font-size:12px;padding:6px 12px;" onclick="fillFTCategoryExpected('tools')">Mark All Present</button>
               </div>
               <div style="overflow-x:auto;">
                 <table>
@@ -2310,6 +2324,7 @@
               <div class="form-section-head">
                 <span class="form-section-icon" style="background:#34c759;">🧹</span>
                 <h3>Cleaning Materials</h3>
+                <button type="button" class="btn ghost" style="margin-left:auto;font-size:12px;padding:6px 12px;" onclick="fillFTCategoryExpected('cleaning')">Mark All Present</button>
               </div>
               <div style="overflow-x:auto;">
                 <table>
@@ -2323,6 +2338,7 @@
               <div class="form-section-head">
                 <span class="form-section-icon" style="background:#af52de;">📦</span>
                 <h3>Others (Please Specify)</h3>
+                <button type="button" class="btn ghost" style="margin-left:auto;font-size:12px;padding:6px 12px;" onclick="fillFTCategoryExpected('others')">Mark All Present</button>
               </div>
               <div style="overflow-x:auto;">
                 <table>
@@ -2908,8 +2924,8 @@
         html += '<tr>' +
           '<td>' + item.name + '</td>' +
           '<td style="color:var(--text-tertiary);">' + item.qty + '</td>' +
-          '<td><input type="number" min="0" id="ft-' + item.id + '-s1" style="width:70px;"></td>' +
-          '<td><input type="number" min="0" id="ft-' + item.id + '-s2" style="width:70px;"></td>' +
+          '<td><input class="ft-qty-input" type="number" min="0" id="ft-' + item.id + '-s1" style="width:70px;" oninput="checkFTQtyInput(this,' + item.qty + ')"></td>' +
+          '<td><input class="ft-qty-input" type="number" min="0" id="ft-' + item.id + '-s2" style="width:70px;" oninput="checkFTQtyInput(this,' + item.qty + ')"></td>' +
         '</tr>';
       });
       tbody.innerHTML = html;
@@ -2924,6 +2940,31 @@
     var all = [];
     FT_CATEGORIES.forEach(function(cat) { cat.items.forEach(function(item) { all.push(item); }); });
     return all;
+  }
+
+  function checkFTQtyInput(input, expectedQty) {
+    input.classList.remove('mismatch', 'match');
+    if (input.value === '') return;
+    if (parseFloat(input.value) === expectedQty) {
+      input.classList.add('match');
+    } else {
+      input.classList.add('mismatch');
+    }
+  }
+
+  function fillFTCategoryExpected(categoryKey) {
+    var cat = FT_CATEGORIES.filter(function(c) { return c.key === categoryKey; })[0];
+    if (!cat) return;
+    cat.items.forEach(function(item) {
+      ['s1', 's2'].forEach(function(suffix) {
+        var input = document.getElementById('ft-' + item.id + '-' + suffix);
+        if (input && input.value === '') {
+          input.value = item.qty;
+          checkFTQtyInput(input, item.qty);
+        }
+      });
+    });
+    showToast('Filled blank entries in this category as expected quantity.', 'success');
   }
 
   function switchFtTab(tab) {
@@ -2941,12 +2982,30 @@
     if (!truck) { showToast('Please select a Truck.', 'error'); return; }
 
     var items = {};
+    var mismatches = [];
+    var uncheckedCount = 0;
     ftAllItems().forEach(function(item) {
-      items[item.id] = {
-        actual1: document.getElementById('ft-' + item.id + '-s1').value,
-        actual2: document.getElementById('ft-' + item.id + '-s2').value
-      };
+      var v1 = document.getElementById('ft-' + item.id + '-s1').value;
+      var v2 = document.getElementById('ft-' + item.id + '-s2').value;
+      [v1, v2].forEach(function(v) {
+        if (v === '') { uncheckedCount++; }
+        else if (parseFloat(v) !== item.qty && mismatches.indexOf(item.name) === -1) { mismatches.push(item.name); }
+      });
+      items[item.id] = { actual1: v1, actual2: v2 };
     });
+
+    if (mismatches.length > 0 || uncheckedCount > 0) {
+      var msg = '';
+      if (mismatches.length > 0) {
+        msg += mismatches.length + ' item(s) show a quantity different from expected:\n— ' + mismatches.slice(0, 8).join('\n— ');
+        if (mismatches.length > 8) msg += '\n…and ' + (mismatches.length - 8) + ' more';
+        msg += '\n\n';
+      }
+      if (uncheckedCount > 0) {
+        msg += uncheckedCount + ' shift entrie(s) have not been checked yet.\n\n';
+      }
+      if (!confirm(msg + 'Submit this checklist anyway?')) return;
+    }
 
     var checklist = {
       date: document.getElementById('ft-date').value,
@@ -2968,6 +3027,7 @@
 
     document.getElementById('ft-form-el').reset();
     document.getElementById('ft-date').value = today;
+    document.querySelectorAll('.ft-qty-input').forEach(function(el) { el.classList.remove('mismatch', 'match'); });
   }
 
   // ============================================================
