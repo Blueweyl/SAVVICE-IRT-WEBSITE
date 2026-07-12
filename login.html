@@ -623,17 +623,38 @@
           return;
         }
 
-        if (isAdmin) {
-          showSuccess('Admin account created! Redirecting...');
-          setTimeout(function() { window.location.href = 'console.html'; }, 1000);
-        } else {
-          sb.auth.signOut();
-          document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-          document.querySelectorAll('.form-panel').forEach(function(p) { p.classList.remove('active'); p.style.display = 'none'; });
-          document.getElementById('panel-pending').style.display = 'block';
-          btn.textContent = 'Create Account';
-          btn.disabled = false;
+        function finishRegistration() {
+          if (isAdmin) {
+            showSuccess('Admin account created! Redirecting...');
+            setTimeout(function() { window.location.href = 'console.html'; }, 1000);
+          } else {
+            sb.auth.signOut();
+            document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelectorAll('.form-panel').forEach(function(p) { p.classList.remove('active'); p.style.display = 'none'; });
+            document.getElementById('panel-pending').style.display = 'block';
+            btn.textContent = 'Create Account';
+            btn.disabled = false;
+          }
         }
+
+        // Only verifiable when signUp returned an active session (i.e. email
+        // confirmation is off). If confirmation is required there's no
+        // session yet, so RLS blocks this read too — nothing to check until
+        // the user confirms and signs in, so just proceed as before.
+        if (!res.data.session) {
+          finishRegistration();
+          return;
+        }
+
+        sb.from('profiles').select('id').eq('id', user.id).single().then(function(profRes) {
+          if (!profRes.data) {
+            showError('Account created, but the profile record is missing. The database trigger from supabase-setup.sql may not be installed yet — run it in the Supabase SQL Editor, then try registering again.');
+            btn.textContent = 'Create Account';
+            btn.disabled = false;
+            return;
+          }
+          finishRegistration();
+        });
       });
   }
 
