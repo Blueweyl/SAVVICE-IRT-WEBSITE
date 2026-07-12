@@ -415,6 +415,26 @@
       <p>Your registration was not approved. Please contact your administrator for more information.</p>
       <button class="btn-back" onclick="switchTab('login')">Back to Sign In</button>
     </div>
+
+    <!-- RESET PASSWORD -->
+    <div class="form-panel" id="panel-reset">
+      <div class="brand" style="margin-bottom:24px;">
+        <h1 style="font-size:18px;">Set a New Password</h1>
+        <p>Enter a new password for your account</p>
+      </div>
+      <form onsubmit="event.preventDefault(); doSetNewPassword();">
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="reset-password" placeholder="Min. 6 characters" required minlength="6">
+          <div class="pw-hint">At least 6 characters</div>
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="reset-password-confirm" placeholder="Re-enter password" required minlength="6">
+        </div>
+        <button type="submit" class="btn-auth" id="btn-reset">Update Password</button>
+      </form>
+    </div>
   </div>
 
   <div class="footer-text">
@@ -425,12 +445,31 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
-  // Check if already logged in
-  sb.auth.getSession().then(function(res) {
-    if (res.data.session) {
-      checkUserAndRedirect(res.data.session.user);
+  // Check if already logged in (skip when arriving via a password-recovery link)
+  var isRecoveryFlow = window.location.hash.indexOf('type=recovery') !== -1;
+
+  if (!isRecoveryFlow) {
+    sb.auth.getSession().then(function(res) {
+      if (res.data.session) {
+        checkUserAndRedirect(res.data.session.user);
+      }
+    });
+  }
+
+  sb.auth.onAuthStateChange(function(event) {
+    if (event === 'PASSWORD_RECOVERY') {
+      showResetPanel();
     }
   });
+
+  function showResetPanel() {
+    document.querySelector('.tabs').style.display = 'none';
+    document.querySelectorAll('.form-panel, .pending-screen').forEach(function(p) { p.classList.remove('active'); p.style.display = 'none'; });
+    hideMessages();
+    var panel = document.getElementById('panel-reset');
+    panel.classList.add('active');
+    panel.style.display = 'block';
+  }
 
   function checkUserAndRedirect(user) {
     sb.from('profiles').select('status').eq('id', user.id).single().then(function(res) {
@@ -617,12 +656,48 @@
       showError('Enter your email address first, then click "Forgot password?"');
       return;
     }
-    sb.auth.resetPasswordForEmail(email).then(function(res) {
+    var redirectTo = window.location.origin + window.location.pathname;
+    sb.auth.resetPasswordForEmail(email, { redirectTo: redirectTo }).then(function(res) {
       if (res.error) {
         showError(res.error.message);
       } else {
         showSuccess('Password reset email sent! Check your inbox.');
       }
+    });
+  }
+
+  // SET NEW PASSWORD (after clicking recovery link)
+  function doSetNewPassword() {
+    var pw = document.getElementById('reset-password').value;
+    var pw2 = document.getElementById('reset-password-confirm').value;
+    var btn = document.getElementById('btn-reset');
+    hideMessages();
+
+    if (pw.length < 6) {
+      showError('Password must be at least 6 characters.');
+      return;
+    }
+    if (pw !== pw2) {
+      showError('Passwords do not match.');
+      return;
+    }
+
+    btn.textContent = 'Updating...';
+    btn.disabled = true;
+
+    sb.auth.updateUser({ password: pw }).then(function(res) {
+      if (res.error) {
+        showError(res.error.message);
+        btn.textContent = 'Update Password';
+        btn.disabled = false;
+        return;
+      }
+      showSuccess('Password updated! Redirecting to sign in...');
+      sb.auth.signOut().then(function() {
+        setTimeout(function() {
+          window.location.href = 'login.html';
+        }, 1500);
+      });
     });
   }
 </script>
