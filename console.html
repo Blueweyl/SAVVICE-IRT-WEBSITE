@@ -1712,6 +1712,12 @@
         </span>
         Attendance
       </button>
+      <button class="nav-item" data-view="firetruck" data-roles="admin,supervisor">
+        <span class="ico">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h1m16 0h1M5 17a2 2 0 104 0m6 0a2 2 0 104 0M5 17V9a1 1 0 011-1h3l3-4h4a1 1 0 011 1v3h2a2 2 0 012 2v7"/><path d="M9 17h6"/></svg>
+        </span>
+        Fire Truck Checklist
+      </button>
       <button class="nav-item" data-view="manpower" data-roles="admin,supervisor">
         <span class="ico">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
@@ -2233,6 +2239,176 @@
         </div>
       </div>
 
+      <!-- ============ FIRE TRUCK CHECKLIST ============ -->
+      <div class="view" id="view-firetruck">
+        <div class="act-tabs">
+          <button class="act-tab active" onclick="switchFtTab('form')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            New Checklist
+          </button>
+          <button class="act-tab" onclick="switchFtTab('log')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Checklist Log
+          </button>
+          <button class="act-tab" onclick="switchFtTab('summary')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Summary
+          </button>
+        </div>
+
+        <!-- ===== TAB: NEW CHECKLIST FORM ===== -->
+        <div class="act-panel" id="ft-form">
+          <form id="ft-form-el" onsubmit="event.preventDefault(); submitFT();">
+
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#ff3b30;">🚒</span>
+                <h3>Fire Truck Turnover Checklist</h3>
+              </div>
+              <div class="form-grid-3">
+                <div class="form-group"><label>Date <span class="req">*</span></label><input type="date" id="ft-date" required></div>
+                <div class="form-group"><label>Truck <span class="req">*</span></label>
+                  <select id="ft-truck" required><option value="">— Select —</option><option>LIMA 1</option><option>LIMA 2</option><option>LIMA 3</option></select>
+                </div>
+                <div class="form-group"><label>Truck Plate No.</label><input type="text" id="ft-plate" placeholder="e.g. ABC-1234"></div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#007aff;">🧰</span>
+                <h3>Equipment and PPE's</h3>
+              </div>
+              <div style="overflow-x:auto;">
+                <table>
+                  <thead><tr><th>Item Description</th><th style="width:90px;">Expected Qty</th><th style="width:110px;">Actual — 1st Shift</th><th style="width:110px;">Actual — 2nd Shift</th></tr></thead>
+                  <tbody id="ft-items-equipment"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#ff9f0a;">🔧</span>
+                <h3>Tools and Accessories</h3>
+              </div>
+              <div style="overflow-x:auto;">
+                <table>
+                  <thead><tr><th>Item Description</th><th style="width:90px;">Expected Qty</th><th style="width:110px;">Actual — 1st Shift</th><th style="width:110px;">Actual — 2nd Shift</th></tr></thead>
+                  <tbody id="ft-items-tools"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#34c759;">🧹</span>
+                <h3>Cleaning Materials</h3>
+              </div>
+              <div style="overflow-x:auto;">
+                <table>
+                  <thead><tr><th>Item Description</th><th style="width:90px;">Expected Qty</th><th style="width:110px;">Actual — 1st Shift</th><th style="width:110px;">Actual — 2nd Shift</th></tr></thead>
+                  <tbody id="ft-items-cleaning"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#af52de;">📦</span>
+                <h3>Others (Please Specify)</h3>
+              </div>
+              <div style="overflow-x:auto;">
+                <table>
+                  <thead><tr><th>Item Description</th><th style="width:90px;">Expected Qty</th><th style="width:110px;">Actual — 1st Shift</th><th style="width:110px;">Actual — 2nd Shift</th></tr></thead>
+                  <tbody id="ft-items-others"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-head">
+                <span class="form-section-icon" style="background:#5856d6;">✍️</span>
+                <h3>Shift Turnover</h3>
+              </div>
+              <div class="form-grid-2">
+                <div>
+                  <h4 style="font-size:13px;margin-bottom:12px;color:var(--text-secondary);">1st Shift → 2nd Shift</h4>
+                  <div class="form-group"><label>Turn-Over By</label><input type="text" id="ft-t12-by" placeholder="1st Shift Team Leader/Driver/Operator"></div>
+                  <div class="form-group"><label>Notes</label><textarea id="ft-t12-notes" rows="2" placeholder="Notes for the incoming shift..."></textarea></div>
+                  <div class="form-group"><label>Received By</label><input type="text" id="ft-t12-received" placeholder="2nd Shift Team Leader/Driver/Operator"></div>
+                </div>
+                <div>
+                  <h4 style="font-size:13px;margin-bottom:12px;color:var(--text-secondary);">2nd Shift → 1st Shift</h4>
+                  <div class="form-group"><label>Turn-Over By</label><input type="text" id="ft-t21-by" placeholder="2nd Shift Team Leader/Driver/Operator"></div>
+                  <div class="form-group"><label>Notes</label><textarea id="ft-t21-notes" rows="2" placeholder="Notes for the incoming shift..."></textarea></div>
+                  <div class="form-group"><label>Received By</label><input type="text" id="ft-t21-received" placeholder="1st Shift Team Leader/Driver/Operator"></div>
+                </div>
+              </div>
+              <div class="form-grid-2">
+                <div class="form-group"><label>Validated By (Roadway Supervisor)</label><input type="text" id="ft-validated-by" placeholder="Roadway Supervisor name"></div>
+                <div></div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit-irt">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+              Submit Checklist
+            </button>
+          </form>
+        </div>
+
+        <!-- ===== TAB: CHECKLIST LOG ===== -->
+        <div class="act-panel" id="ft-log" style="display:none;">
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Checklist Log</h3>
+              <div class="actions">
+                <button class="btn ghost" onclick="exportFTLogsCSV()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export Excel
+                </button>
+                <button class="btn ghost" onclick="exportFTLogsPDF()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Export PDF
+                </button>
+              </div>
+            </div>
+            <div class="filter-row">
+              <input type="date" id="ft-log-filter-date" onchange="renderFTLog()">
+              <select id="ft-log-filter-truck" onchange="renderFTLog()"><option value="">All Trucks</option><option>LIMA 1</option><option>LIMA 2</option><option>LIMA 3</option></select>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Date</th><th>Truck</th><th>Plate No.</th><th>Turnover 1→2 By</th><th>Turnover 2→1 By</th><th>Validated By</th><th style="text-align:center;">Actions</th></tr>
+                </thead>
+                <tbody id="ft-log-table-body">
+                  <tr><td colspan="8" class="empty-cell">No checklists submitted yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="att-table-footer"><span id="ft-log-count">0 checklists</span></div>
+          </div>
+        </div>
+
+        <!-- ===== TAB: SUMMARY ===== -->
+        <div class="act-panel" id="ft-summary" style="display:none;">
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Checklist Summary by Date</h3>
+            </div>
+            <div class="filter-row">
+              <label style="font-size:13px;font-weight:500;color:var(--text-secondary);display:flex;align-items:center;gap:6px;">From <input type="date" id="ft-sum-from" onchange="renderFTSummary()"></label>
+              <label style="font-size:13px;font-weight:500;color:var(--text-secondary);display:flex;align-items:center;gap:6px;">To <input type="date" id="ft-sum-to" onchange="renderFTSummary()"></label>
+            </div>
+            <div id="ft-summary-content">
+              <div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><p>No data to summarize yet. Submit checklists to see the summary.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ============ MANPOWER ============ -->
       <div class="view" id="view-manpower">
         <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
@@ -2416,6 +2592,7 @@
 
     // Load data from Supabase
     loadReportsFromSupabase();
+    loadFTChecklistsFromSupabase();
   }
 
   // Sign out
@@ -2511,6 +2688,7 @@
     dashboard: ["Dashboard", "Overview / All teams / Today"],
     activity: ["Daily Activity", "Field Operations / Activity Log"],
     attendance: ["Attendance", "Field Operations / Attendance"],
+    firetruck: ["Fire Truck Checklist", "Field Operations / Fire Truck Turnover"],
     manpower: ["Manpower", "Field Operations / Personnel"],
     equipment: ["Equipment", "Field Operations / Asset Registry"],
     billing: ["Billing", "Finance / NLEX IRT Contract"],
@@ -2639,6 +2817,339 @@
   var today = new Date().toISOString().split('T')[0];
   var dateField = document.getElementById('irt-date');
   if (dateField) dateField.value = today;
+
+  // ============================================================
+  // FIRE TRUCK TURNOVER CHECKLIST
+  // ============================================================
+  var ftChecklists = [];
+
+  var FT_CATEGORIES = [
+    { key: 'equipment', tbody: 'ft-items-equipment', items: [
+      { id: 'eq1', qty: 2, name: '1 1/2 Gun Type Variable Nozzle' },
+      { id: 'eq2', qty: 3, name: 'Double Jacket Firehose 1 1/2" dia. x 50 ft. NST' },
+      { id: 'eq3', qty: 3, name: 'Double Jacket Firehose 2 1/2" dia. x 50 ft. NST' },
+      { id: 'eq4', qty: 1, name: 'Brass Spanner Wrench 1 1/2"' },
+      { id: 'eq5', qty: 1, name: 'Brass Spanner Wrench 2 1/2"' },
+      { id: 'eq6', qty: 1, name: 'Reducer 2 1/2" dia. x 1 1/2" dia. NST' },
+      { id: 'eq7', qty: 2, name: 'Double Female Adaptor 2 1/2" dia.' },
+      { id: 'eq8', qty: 1, name: 'Crow Bar' },
+      { id: 'eq9', qty: 1, name: 'Pike Pole 10ft. with wooden handle' },
+      { id: 'eq10', qty: 1, name: 'Bolt Cutter' },
+      { id: 'eq11', qty: 1, name: 'Pick Head Axe' },
+      { id: 'eq12', qty: 1, name: 'Flat Head Axe' },
+      { id: 'eq13', qty: 1, name: 'Fiberglass Extension Ladder 10-18 ft.' },
+      { id: 'eq14', qty: 1, name: 'Siamese Wye Connection 2 1/2" x 1 1/2" x 1 1/2" NST' },
+      { id: 'eq15', qty: 1, name: 'Stainless Water Cannon with Straight Nozzle Tip' },
+      { id: 'eq16', qty: 1, name: '2 1/2" x 20 ft. Suction Clear Hose with Spring' },
+      { id: 'eq17', qty: 1, name: 'Fire Extinguisher- Dry Chemical 10 lbs.' },
+      { id: 'eq18', qty: 4, name: "Fireman's Suits: (Fire Coat, Trouser, Helmet, Boots)" },
+      { id: 'eq19', qty: 2, name: 'Self-Contained Breathing Apparatus (Spasciani Brand)' },
+      { id: 'eq20', qty: 10, name: '6% Aqueous Film Forming Foam (AFFF)' },
+      { id: 'eq21', qty: 1, name: 'Air Foam Gun' },
+      { id: 'eq22', qty: 1, name: 'FEMALE 2 1/2 AND MALE 2 1/2 FITTINGS' },
+      { id: 'eq23', qty: 1, name: 'MECHANICAL PLAIR' },
+      { id: 'eq24', qty: 1, name: 'POSITIVE AND NEGATIVE COMBINATION SCREW' }
+    ]},
+    { key: 'tools', tbody: 'ft-items-tools', items: [
+      { id: 'tl1', qty: 1, name: 'Hydraulic Jack Assembly with Crank Handle' },
+      { id: 'tl2', qty: 1, name: '10" Adjustable Wrench' },
+      { id: 'tl3', qty: 1, name: '24 x 27 Open End Wrench' },
+      { id: 'tl4', qty: 1, name: '19 x 22 Open End Wrench' },
+      { id: 'tl5', qty: 1, name: '14 x 17 Open End Wrench' },
+      { id: 'tl6', qty: 1, name: '8 x 10 Open End Wrench' },
+      { id: 'tl7', qty: 1, name: 'Flat-Headed Screwdriver' },
+      { id: 'tl8', qty: 1, name: 'Philips Screwdriver' },
+      { id: 'tl9', qty: 1, name: 'Hammer' },
+      { id: 'tl10', qty: 1, name: 'Grease Gun' },
+      { id: 'tl11', qty: 1, name: 'Clear Hose' },
+      { id: 'tl12', qty: 1, name: 'Ratchet: 22mm, 19mm, 17mm, 14mm, 12mm' },
+      { id: 'tl13', qty: 1, name: 'Tire Wrench with Handle' },
+      { id: 'tl14', qty: 1, name: 'Spare Tire' }
+    ]},
+    { key: 'cleaning', tbody: 'ft-items-cleaning', items: [
+      { id: 'cl1', qty: 3, name: 'Broom Stick' },
+      { id: 'cl2', qty: 2, name: 'Push Brush' },
+      { id: 'cl3', qty: 1, name: 'Powder Soap' },
+      { id: 'cl4', qty: 1, name: 'Abrade Degreaser' }
+    ]},
+    { key: 'others', tbody: 'ft-items-others', items: [
+      { id: 'ot1', qty: 1, name: 'Fire Extinguisher 20 lbs.' },
+      { id: 'ot2', qty: 1, name: 'Caltex Fleet Card' },
+      { id: 'ot3', qty: 1, name: 'RFID Card' }
+    ]}
+  ];
+
+  function renderFTItemRows() {
+    FT_CATEGORIES.forEach(function(cat) {
+      var tbody = document.getElementById(cat.tbody);
+      if (!tbody) return;
+      var html = '';
+      cat.items.forEach(function(item) {
+        html += '<tr>' +
+          '<td>' + item.name + '</td>' +
+          '<td style="color:var(--text-tertiary);">' + item.qty + '</td>' +
+          '<td><input type="number" min="0" id="ft-' + item.id + '-s1" style="width:70px;"></td>' +
+          '<td><input type="number" min="0" id="ft-' + item.id + '-s2" style="width:70px;"></td>' +
+        '</tr>';
+      });
+      tbody.innerHTML = html;
+    });
+  }
+  renderFTItemRows();
+
+  var ftDateField = document.getElementById('ft-date');
+  if (ftDateField) ftDateField.value = today;
+
+  function ftAllItems() {
+    var all = [];
+    FT_CATEGORIES.forEach(function(cat) { cat.items.forEach(function(item) { all.push(item); }); });
+    return all;
+  }
+
+  function switchFtTab(tab) {
+    var container = document.getElementById('view-firetruck');
+    container.querySelectorAll('.act-tab').forEach(function(t) { t.classList.remove('active'); });
+    container.querySelectorAll('.act-panel').forEach(function(p) { p.style.display = 'none'; });
+    document.getElementById('ft-' + tab).style.display = 'block';
+    event.target.closest('.act-tab').classList.add('active');
+    if (tab === 'log') renderFTLog();
+    if (tab === 'summary') renderFTSummary();
+  }
+
+  function submitFT() {
+    var truck = document.getElementById('ft-truck').value;
+    if (!truck) { showToast('Please select a Truck.', 'error'); return; }
+
+    var items = {};
+    ftAllItems().forEach(function(item) {
+      items[item.id] = {
+        actual1: document.getElementById('ft-' + item.id + '-s1').value,
+        actual2: document.getElementById('ft-' + item.id + '-s2').value
+      };
+    });
+
+    var checklist = {
+      date: document.getElementById('ft-date').value,
+      truck: truck,
+      plateNo: document.getElementById('ft-plate').value,
+      items: items,
+      turnover1to2By: document.getElementById('ft-t12-by').value,
+      turnover1to2Notes: document.getElementById('ft-t12-notes').value,
+      turnover1to2Received: document.getElementById('ft-t12-received').value,
+      turnover2to1By: document.getElementById('ft-t21-by').value,
+      turnover2to1Notes: document.getElementById('ft-t21-notes').value,
+      turnover2to1Received: document.getElementById('ft-t21-received').value,
+      validatedBy: document.getElementById('ft-validated-by').value
+    };
+
+    saveFTToSupabase(checklist, function() {
+      showToast('Fire truck checklist submitted and synced!', 'success');
+    });
+
+    document.getElementById('ft-form-el').reset();
+    document.getElementById('ft-date').value = today;
+  }
+
+  // ============================================================
+  // FIRE TRUCK — SUPABASE SYNC
+  // ============================================================
+  function saveFTToSupabase(checklist, callback) {
+    var row = {
+      date: checklist.date, truck: checklist.truck, plate_no: checklist.plateNo,
+      items: checklist.items,
+      turnover_1to2_by: checklist.turnover1to2By, turnover_1to2_notes: checklist.turnover1to2Notes,
+      turnover_1to2_received_by: checklist.turnover1to2Received,
+      turnover_2to1_by: checklist.turnover2to1By, turnover_2to1_notes: checklist.turnover2to1Notes,
+      turnover_2to1_received_by: checklist.turnover2to1Received,
+      validated_by: checklist.validatedBy,
+      submitted_by: currentUser.id, submitted_by_name: currentProfile.display_name
+    };
+
+    sb.from('firetruck_checklists').upsert(row, { onConflict: 'date,truck' }).then(function(res) {
+      if (res.error) {
+        showToast('Error saving checklist: ' + res.error.message, 'error');
+      } else {
+        if (callback) callback();
+        loadFTChecklistsFromSupabase();
+      }
+    });
+  }
+
+  function loadFTChecklistsFromSupabase() {
+    sb.from('firetruck_checklists').select('*').order('submitted_at', { ascending: false })
+      .then(function(res) {
+        if (res.data) {
+          ftChecklists = res.data.map(function(r) {
+            return {
+              id: r.id, date: r.date, truck: r.truck, plateNo: r.plate_no, items: r.items || {},
+              turnover1to2By: r.turnover_1to2_by, turnover1to2Notes: r.turnover_1to2_notes,
+              turnover1to2Received: r.turnover_1to2_received_by,
+              turnover2to1By: r.turnover_2to1_by, turnover2to1Notes: r.turnover_2to1_notes,
+              turnover2to1Received: r.turnover_2to1_received_by,
+              validatedBy: r.validated_by, submittedByName: r.submitted_by_name, submittedAt: r.submitted_at
+            };
+          });
+        }
+      });
+  }
+
+  function getFilteredFTChecklists() {
+    var date = document.getElementById('ft-log-filter-date').value;
+    var truck = document.getElementById('ft-log-filter-truck').value;
+    return ftChecklists.filter(function(c) {
+      if (date && c.date !== date) return false;
+      if (truck && c.truck !== truck) return false;
+      return true;
+    });
+  }
+
+  function renderFTLog() {
+    var filtered = getFilteredFTChecklists();
+    var tbody = document.getElementById('ft-log-table-body');
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="empty-cell">No checklists match the current filters.</td></tr>';
+      document.getElementById('ft-log-count').textContent = '0 checklists';
+      return;
+    }
+    var html = '';
+    filtered.forEach(function(c, i) {
+      html += '<tr>' +
+        '<td style="color:var(--text-tertiary);font-size:12px;">' + (i + 1) + '</td>' +
+        '<td>' + c.date + '</td>' +
+        '<td>' + c.truck + '</td>' +
+        '<td>' + (c.plateNo || '—') + '</td>' +
+        '<td>' + (c.turnover1to2By || '—') + '</td>' +
+        '<td>' + (c.turnover2to1By || '—') + '</td>' +
+        '<td>' + (c.validatedBy || '—') + '</td>' +
+        '<td style="text-align:center;"><button class="btn ghost" onclick="viewFTChecklist(' + c.id + ')">View</button></td>' +
+      '</tr>';
+    });
+    tbody.innerHTML = html;
+    document.getElementById('ft-log-count').textContent = filtered.length + ' checklist' + (filtered.length > 1 ? 's' : '');
+  }
+
+  function viewFTChecklist(id) {
+    var c = ftChecklists.find(function(x) { return x.id === id; });
+    if (!c) return;
+    var html = '<button class="modal-close" onclick="this.closest(\'.modal-overlay\').remove()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+    html += '<h3>Fire Truck Checklist — ' + c.date + ' — ' + c.truck + '</h3>';
+    html += '<div class="detail-grid">';
+    [['Plate No.', c.plateNo], ['Turnover 1→2 By', c.turnover1to2By], ['Turnover 1→2 Received By', c.turnover1to2Received],
+     ['Turnover 2→1 By', c.turnover2to1By], ['Turnover 2→1 Received By', c.turnover2to1Received], ['Validated By', c.validatedBy]
+    ].forEach(function(f) {
+      html += '<div class="detail-item"><div class="detail-label">' + f[0] + '</div><div class="detail-value">' + (f[1] || '—') + '</div></div>';
+    });
+    html += '</div>';
+    if (c.turnover1to2Notes || c.turnover2to1Notes) {
+      html += '<div class="detail-grid">';
+      html += '<div class="detail-item"><div class="detail-label">Notes (1→2)</div><div class="detail-value">' + (c.turnover1to2Notes || '—') + '</div></div>';
+      html += '<div class="detail-item"><div class="detail-label">Notes (2→1)</div><div class="detail-value">' + (c.turnover2to1Notes || '—') + '</div></div>';
+      html += '</div>';
+    }
+    html += '<div style="overflow-x:auto;margin-top:16px;"><table><thead><tr><th>Item</th><th>Expected</th><th>1st Shift</th><th>2nd Shift</th></tr></thead><tbody>';
+    ftAllItems().forEach(function(item) {
+      var rec = c.items[item.id] || {};
+      html += '<tr><td>' + item.name + '</td><td>' + item.qty + '</td><td>' + (rec.actual1 || '—') + '</td><td>' + (rec.actual2 || '—') + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+    var overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+    overlay.innerHTML = '<div class="modal">' + html + '</div>';
+    document.body.appendChild(overlay);
+  }
+
+  function renderFTSummary() {
+    var from = document.getElementById('ft-sum-from').value;
+    var to = document.getElementById('ft-sum-to').value;
+    var filtered = ftChecklists.filter(function(c) {
+      if (from && c.date < from) return false;
+      if (to && c.date > to) return false;
+      return true;
+    });
+    var container = document.getElementById('ft-summary-content');
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><p>No data in the selected date range.</p></div>';
+      return;
+    }
+
+    var groups = {};
+    filtered.forEach(function(c) {
+      if (!groups[c.date]) groups[c.date] = [];
+      groups[c.date].push(c);
+    });
+
+    var dates = Object.keys(groups).sort().reverse();
+    var html = '';
+    dates.forEach(function(date) {
+      var items = groups[date];
+      var trucks = [];
+      items.forEach(function(c) { if (trucks.indexOf(c.truck) === -1) trucks.push(c.truck); });
+      html += '<div class="summary-date-group">';
+      html += '<div class="summary-date-header"><span>' + date + '</span><span style="font-weight:400;color:var(--text-secondary);font-size:13px;">' + items.length + ' checklist' + (items.length > 1 ? 's' : '') + '</span></div>';
+      html += '<div class="summary-stats" style="grid-template-columns:repeat(2,1fr);">';
+      html += '<div class="summary-stat"><div class="n">' + items.length + '</div><div class="l">Checklists Submitted</div></div>';
+      html += '<div class="summary-stat"><div class="n">' + trucks.length + '</div><div class="l">Trucks Covered</div></div>';
+      html += '</div>';
+      html += '<div style="padding:16px 24px;">';
+      html += '<table><thead><tr><th>Truck</th><th>Plate No.</th><th>Validated By</th></tr></thead><tbody>';
+      items.forEach(function(c) {
+        html += '<tr><td>' + c.truck + '</td><td>' + (c.plateNo || '—') + '</td><td>' + (c.validatedBy || '—') + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+      html += '</div>';
+    });
+
+    container.innerHTML = html;
+  }
+
+  function exportFTLogsCSV() {
+    var data = getFilteredFTChecklists();
+    if (data.length === 0) { showToast('No data to export.', 'error'); return; }
+    var headers = ['Date', 'Truck', 'Plate No'];
+    ftAllItems().forEach(function(item) {
+      headers.push(item.name + ' (1st Shift)');
+      headers.push(item.name + ' (2nd Shift)');
+    });
+    headers.push('Turnover 1to2 By', 'Turnover 1to2 Notes', 'Turnover 1to2 Received By',
+      'Turnover 2to1 By', 'Turnover 2to1 Notes', 'Turnover 2to1 Received By', 'Validated By');
+    var csv = headers.map(function(h) { return '"' + h.replace(/"/g, '""') + '"'; }).join(',') + '\n';
+    data.forEach(function(c) {
+      var row = [c.date, c.truck, c.plateNo || ''];
+      ftAllItems().forEach(function(item) {
+        var rec = c.items[item.id] || {};
+        row.push(rec.actual1 || '');
+        row.push(rec.actual2 || '');
+      });
+      row.push(c.turnover1to2By || '', c.turnover1to2Notes || '', c.turnover1to2Received || '',
+        c.turnover2to1By || '', c.turnover2to1Notes || '', c.turnover2to1Received || '', c.validatedBy || '');
+      csv += row.map(function(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(',') + '\n';
+    });
+    downloadFile(csv, 'NLEX_FireTruck_Checklist_Log.csv', 'text/csv;charset=utf-8;');
+    showToast('Checklist log exported as CSV.', 'success');
+  }
+
+  function exportFTLogsPDF() {
+    var data = getFilteredFTChecklists();
+    if (data.length === 0) { showToast('No data to export.', 'error'); return; }
+    var w = window.open('', '_blank');
+    var html = '<!DOCTYPE html><html><head><title>NLEX Fire Truck Checklist Log</title>';
+    html += '<style>body{font-family:Arial,sans-serif;padding:40px;color:#1d1d1f;font-size:12px;}h1{font-size:20px;margin-bottom:4px;}h2{font-size:14px;color:#86868b;font-weight:400;margin-bottom:24px;}table{width:100%;border-collapse:collapse;margin-bottom:24px;}th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;font-size:11px;}th{background:#f5f5f7;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;font-size:10px;}tr:nth-child(even){background:#fafafa;}.footer{margin-top:40px;font-size:10px;color:#86868b;border-top:1px solid #ddd;padding-top:12px;}@media print{body{padding:20px;}}@page{size:landscape;margin:15mm;}</style>';
+    html += '</head><body>';
+    html += '<h1>SAVVICE — NLEX Fire Truck Checklist Log</h1>';
+    html += '<h2>Generated: ' + new Date().toLocaleString() + ' | Records: ' + data.length + '</h2>';
+    html += '<table><tr><th>Date</th><th>Truck</th><th>Plate No</th><th>Turnover 1→2 By</th><th>Turnover 2→1 By</th><th>Validated By</th></tr>';
+    data.forEach(function(c) {
+      html += '<tr><td>' + c.date + '</td><td>' + c.truck + '</td><td>' + (c.plateNo || '—') + '</td><td>' + (c.turnover1to2By || '—') + '</td><td>' + (c.turnover2to1By || '—') + '</td><td>' + (c.validatedBy || '—') + '</td></tr>';
+    });
+    html += '</table>';
+    html += '<div class="footer">Savvice Corporation — NLEX Incident Response Team | Confidential</div>';
+    html += '<script>setTimeout(function(){window.print();},500);<\/script>';
+    html += '</body></html>';
+    w.document.write(html);
+    w.document.close();
+    showToast('PDF ready — use browser print dialog to save.', 'success');
+  }
 
   // Dark mode toggle
   function toggleDarkMode() {

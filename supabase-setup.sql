@@ -141,3 +141,37 @@ create policy "Approved users can update attendance"
 
 -- 5. Enable realtime for reports table
 alter publication supabase_realtime add table public.reports;
+
+-- 6. Fire truck turnover checklists
+create table public.firetruck_checklists (
+  id bigint generated always as identity primary key,
+  date text not null,
+  truck text not null,
+  plate_no text,
+  items jsonb not null default '{}'::jsonb,
+  turnover_1to2_by text,
+  turnover_1to2_notes text,
+  turnover_1to2_received_by text,
+  turnover_2to1_by text,
+  turnover_2to1_notes text,
+  turnover_2to1_received_by text,
+  validated_by text,
+  submitted_by uuid references auth.users(id),
+  submitted_by_name text,
+  submitted_at timestamptz default now(),
+  unique (date, truck)
+);
+
+alter table public.firetruck_checklists enable row level security;
+
+create policy "Approved users can read firetruck checklists"
+  on public.firetruck_checklists for select
+  using (public.is_approved());
+
+create policy "Approved users can insert firetruck checklists"
+  on public.firetruck_checklists for insert
+  with check (public.is_approved());
+
+create policy "Approved users can update firetruck checklists"
+  on public.firetruck_checklists for update
+  using (public.is_approved());
