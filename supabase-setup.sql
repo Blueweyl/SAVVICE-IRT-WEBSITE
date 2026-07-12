@@ -38,7 +38,7 @@ create table public.profiles (
   display_name text not null,
   team text,
   position text,
-  system_role text default 'supervisor' check (system_role in ('admin', 'supervisor', 'client')),
+  system_role text default 'supervisor' check (system_role in ('admin', 'supervisor', 'leadman', 'client')),
   status text default 'pending' check (status in ('pending', 'approved', 'rejected')),
   registered_at timestamptz default now(),
   approved_by uuid,
@@ -175,3 +175,28 @@ create policy "Approved users can insert firetruck checklists"
 create policy "Approved users can update firetruck checklists"
   on public.firetruck_checklists for update
   using (public.is_approved());
+
+-- ============================================================
+-- MIGRATION — run once if your database was created before this
+-- was added: allows the 'leadman' role and lets admins delete a
+-- user account (auth + profile) from the console.
+-- ============================================================
+alter table public.profiles drop constraint if exists profiles_system_role_check;
+alter table public.profiles add constraint profiles_system_role_check
+  check (system_role in ('admin', 'supervisor', 'leadman', 'client'));
+
+create or replace function public.admin_delete_user(target_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_admin() then
+    raise exception 'Not authorized';
+  end if;
+  delete from auth.users where id = target_id;
+end;
+$$;
+
+grant execute on function public.admin_delete_user(uuid) to authenticated;
