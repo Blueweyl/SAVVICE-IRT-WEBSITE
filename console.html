@@ -1912,7 +1912,7 @@
               </div>
               <div class="form-grid-2">
                 <div class="form-group"><label>Leadman / Operator Name <span class="req">*</span></label>
-                  <select id="irt-leadman" required><option value="">— Select —</option></select>
+                  <input type="text" id="irt-leadman" placeholder="Enter name" required>
                 </div>
                 <div class="form-group"></div>
               </div>
@@ -2639,19 +2639,6 @@
   var today = new Date().toISOString().split('T')[0];
   var dateField = document.getElementById('irt-date');
   if (dateField) dateField.value = today;
-
-  // Populate leadman dropdown from manpower
-  var leadmanSelect = document.getElementById('irt-leadman');
-  if (leadmanSelect) {
-    nlex_irt_manpower.forEach(function(emp) {
-      if (emp.role === 'Leadman' || emp.role === 'Supervisor') {
-        var opt = document.createElement('option');
-        opt.value = emp.name;
-        opt.textContent = emp.name + ' (' + emp.role + ')';
-        leadmanSelect.appendChild(opt);
-      }
-    });
-  }
 
   // Dark mode toggle
   function toggleDarkMode() {
