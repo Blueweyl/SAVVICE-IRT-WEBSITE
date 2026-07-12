@@ -1686,13 +1686,14 @@
       <select id="roleSelect" onchange="setRole(this.value)">
         <option value="admin">Admin</option>
         <option value="supervisor">Supervisor</option>
+        <option value="leadman">Leadman</option>
         <option value="client">Client</option>
       </select>
     </div>
 
     <nav class="sidenav" id="sidenav">
       <div class="nav-section-label">Overview</div>
-      <button class="nav-item" data-view="dashboard" data-roles="admin,supervisor,client">
+      <button class="nav-item" data-view="dashboard" data-roles="admin,supervisor,leadman,client">
         <span class="ico">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         </span>
@@ -1700,31 +1701,31 @@
       </button>
 
       <div class="nav-section-label">Field Operations</div>
-      <button class="nav-item" data-view="activity" data-roles="admin,supervisor">
+      <button class="nav-item" data-view="activity" data-roles="admin,supervisor,leadman">
         <span class="ico">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </span>
         Daily Activity
       </button>
-      <button class="nav-item" data-view="attendance" data-roles="admin,supervisor">
+      <button class="nav-item" data-view="attendance" data-roles="admin,supervisor,leadman">
         <span class="ico">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </span>
         Attendance
       </button>
-      <button class="nav-item" data-view="firetruck" data-roles="admin,supervisor">
+      <button class="nav-item" data-view="firetruck" data-roles="admin,supervisor,leadman">
         <span class="ico">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h1m16 0h1M5 17a2 2 0 104 0m6 0a2 2 0 104 0M5 17V9a1 1 0 011-1h3l3-4h4a1 1 0 011 1v3h2a2 2 0 012 2v7"/><path d="M9 17h6"/></svg>
         </span>
         Fire Truck Checklist
       </button>
-      <button class="nav-item" data-view="manpower" data-roles="admin,supervisor">
+      <button class="nav-item" data-view="manpower" data-roles="admin,supervisor,leadman">
         <span class="ico">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
         </span>
         Manpower
       </button>
-      <button class="nav-item" data-view="equipment" data-roles="admin,supervisor">
+      <button class="nav-item" data-view="equipment" data-roles="admin,supervisor,leadman">
         <span class="ico">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
         </span>
@@ -1854,14 +1855,16 @@
             <h3>Recent Activity Submissions</h3>
             <div class="actions"><button class="btn ghost" onclick="goTo('activity')">View All</button></div>
           </div>
-          <table>
-            <thead>
-              <tr><th>Team</th><th>Task</th><th>Location</th><th>Supervisor</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-              <tr id="dash-activity-empty"><td colspan="5" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No activity submissions yet. Click <strong>+ New Entry</strong> in Daily Activity to get started.</td></tr>
-            </tbody>
-          </table>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr><th>Team</th><th>Task</th><th>Location</th><th>Supervisor</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr id="dash-activity-empty"><td colspan="5" style="text-align:center;padding:32px;color:var(--text-tertiary);font-size:13px;">No activity submissions yet. Click <strong>+ New Entry</strong> in Daily Activity to get started.</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -2212,21 +2215,23 @@
                 Upload New List
               </button>
             </div>
-            <table>
-              <thead>
-                <tr>
-                  <th style="width:32px;"><input type="checkbox" id="att-select-all" onchange="toggleSelectAll(this)" title="Select all"></th>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Team</th>
-                  <th>Position</th>
-                  <th>Status</th>
-                  <th>Remarks</th>
-                </tr>
-              </thead>
-              <tbody id="att-table-body">
-              </tbody>
-            </table>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:32px;"><input type="checkbox" id="att-select-all" onchange="toggleSelectAll(this)" title="Select all"></th>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Team</th>
+                    <th>Position</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                  </tr>
+                </thead>
+                <tbody id="att-table-body">
+                </tbody>
+              </table>
+            </div>
             <div class="att-table-footer" id="att-table-footer">
               <span id="att-showing">Showing 0 of 0</span>
               <span id="att-selected-actions" style="display:none;">
@@ -2419,13 +2424,15 @@
         <div class="panel">
           <div class="panel-head"><h3>Manpower List</h3><div class="actions"><button class="btn ghost">Export</button><button class="btn primary">+ Add Personnel</button></div></div>
           <div class="filter-row"><select><option>All Teams</option><option>NLEX IRT</option></select></div>
-          <table>
-            <thead>
-              <tr><th>Name</th><th>ID</th><th>Team</th><th>Role</th><th>Deployment</th><th>Status</th></tr>
-            </thead>
-            <tbody id="manpower-table-body">
-            </tbody>
-          </table>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr><th>Name</th><th>ID</th><th>Team</th><th>Role</th><th>Deployment</th><th>Status</th></tr>
+              </thead>
+              <tbody id="manpower-table-body">
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -3594,6 +3601,7 @@
             var roleSelect = '<select onchange="changeUserRole(\'' + u.id + '\', this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--border);border-radius:4px;font-family:inherit;">' +
               '<option value="admin"' + (u.system_role === 'admin' ? ' selected' : '') + '>Admin</option>' +
               '<option value="supervisor"' + (u.system_role === 'supervisor' ? ' selected' : '') + '>Supervisor</option>' +
+              '<option value="leadman"' + (u.system_role === 'leadman' ? ' selected' : '') + '>Leadman</option>' +
               '<option value="client"' + (u.system_role === 'client' ? ' selected' : '') + '>Client</option></select>';
             return '<tr>' +
               '<td><span class="avatar-sm">' + initials + '</span>' + u.display_name + '</td>' +
